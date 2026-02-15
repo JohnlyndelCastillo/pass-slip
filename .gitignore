@@ -2,3 +2,5 @@
 # Database dumps (keep init.sql tracked)
 database/*.sql
 !database/init.sql
+# Environment variables
+.env

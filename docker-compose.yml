@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   web:
     build: .
@@ -17,8 +15,8 @@ services:
     image: mysql:8.0
     container_name: pass-slip-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: group2-123
-      MYSQL_DATABASE: pass_slip_system
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3306:3306"
     volumes:
