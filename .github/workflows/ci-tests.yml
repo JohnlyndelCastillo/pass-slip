@@ -1,0 +1,63 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create .env file
+        run: |
+          cp .env.example .env
+
+      - name: Build and start Docker containers
+        run: |
+          docker compose up -d
+          sleep 10  # Wait for MySQL to be ready
+
+      - name: Check if containers are running
+        run: |
+          docker ps
+          docker compose ps
+
+      - name: Test database connection
+        run: |
+          docker exec pass-slip-mysql mysql -uroot -pgroup2-123 -e "SHOW DATABASES;"
+          docker exec pass-slip-mysql mysql -uroot -pgroup2-123 pass_slip_system -e "SHOW TABLES;"
+
+      - name: PHP Syntax Check
+        run: |
+          # Check all PHP files for syntax errors
+          docker exec pass-slip-web find /var/www/html -name "*.php" -exec php -l {} \; | grep -v "No syntax errors"
+
+      - name: Test web server is responding
+        run: |
+          curl -f http://localhost:8080 || exit 1
+
+      - name: Run basic health checks
+        run: |
+          # Check if Apache is running
+          docker exec pass-slip-web service apache2 status
+
+          # Check if MySQL is accessible
+          docker exec pass-slip-mysql mysqladmin ping -uroot -pgroup2-123
+
+      - name: View logs on failure
+        if: failure()
+        run: |
+          echo "=== Web Server Logs ==="
+          docker logs pass-slip-web
+          echo "=== Database Logs ==="
+          docker logs pass-slip-mysql
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down -v
