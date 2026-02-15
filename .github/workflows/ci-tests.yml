@@ -21,7 +21,19 @@ jobs:
       - name: Build and start Docker containers
         run: |
           docker compose up -d
-          sleep 10  # Wait for MySQL to be ready
+
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          for i in {1..30}; do
+            if docker exec pass-slip-mysql mysqladmin ping -uroot -pgroup2-123 --silent; then
+              echo "MySQL is ready!"
+              sleep 5  # Give it a few more seconds to fully initialize
+              break
+            fi
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 2
+          done
 
       - name: Check if containers are running
         run: |
