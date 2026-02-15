@@ -18,7 +18,15 @@ git clone <your-repository-url>
 cd pass-slip
 ```
 
-### 2. Start the Application
+### 2. Configure Environment Variables
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+### 3. Start the Application
 
 ```bash
 docker compose up -d
@@ -31,14 +39,14 @@ This command will:
 - Create and initialize the database with the schema from `database/init.sql`
 - Start both containers in the background
 
-### 3. Access the Application
+### 4. Access the Application
 
 Once the containers are running, you can access:
 
 - **Web Application**: http://localhost:8080
 - **Database**: localhost:3306
 
-### 4. Verify Everything is Running
+### 5. Verify Everything is Running
 
 ```bash
 docker ps
