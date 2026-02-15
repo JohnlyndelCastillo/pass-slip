@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    container_name: pass-slip-web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - pass-slip-network
+
+  db:
+    image: mysql:8.0
+    container_name: pass-slip-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: group2-123
+      MYSQL_DATABASE: pass_slip_system
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/mysql
+    networks:
+      - pass-slip-network
+
+networks:
+  pass-slip-network:
+    driver: bridge
+
+volumes:
+  db_data:
