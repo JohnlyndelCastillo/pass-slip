@@ -57,7 +57,22 @@ jobs:
       - name: PHP Syntax Check
         run: |
           # Check all PHP files for syntax errors
-          docker exec pass-slip-web find /var/www/html -name "*.php" -exec php -l {} \; | grep -v "No syntax errors"
+          echo "Checking PHP syntax..."
+          ERROR_COUNT=0
+          while IFS= read -r file; do
+            if ! docker exec pass-slip-web php -l "$file" > /dev/null 2>&1; then
+              echo "❌ Syntax error in: $file"
+              docker exec pass-slip-web php -l "$file"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            fi
+          done < <(docker exec pass-slip-web find /var/www/html -name "*.php")
+
+          if [ $ERROR_COUNT -eq 0 ]; then
+            echo "✅ All PHP files passed syntax check"
+          else
+            echo "❌ Found $ERROR_COUNT file(s) with syntax errors"
+            exit 1
+          fi
 
       - name: Test web server is responding
         run: |
