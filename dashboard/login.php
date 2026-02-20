@@ -18,11 +18,11 @@
       <h6>Enter your credentials to access your account</h6>
       <form action="dashboard/login.php" method="post">
         <label for="username"></label>
-        <input type="text" id="username" name="username" placeholder="Enter Username" required>
+        <input type="text" id="username" name="username" placeholder="Enter username" required>
 
         <label for="password"></label>
         <div class="password-container">
-          <input type="password" id="password" name="password" placeholder="Enter Password" required>
+          <input type="password" id="password" name="password" placeholder="Enter password" required>
           <i class="fa-solid fa-eye toggle-password"></i>
         </div>
 
