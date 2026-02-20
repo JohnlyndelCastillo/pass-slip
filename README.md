@@ -8,6 +8,7 @@ Before you begin, ensure you have the following installed:
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [Git](https://git-scm.com/downloads)
+- [Notion](https://www.notion.so/2f9d5a371a7280539be5ea2c98185f50?v=2f9d5a371a728004b43a000c4dadb86c)
 
 ## Getting Started
 
