@@ -27,7 +27,7 @@ CREATE TABLE `users` (
   `fullname` varchar(255) DEFAULT NULL,
   `username` varchar(50) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `role` enum('student','instructor','super-admin','admin') NOT NULL,
+  `role` enum('student','instructor','super-admin','admin') NOT NULL DEFAULT 'student',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)

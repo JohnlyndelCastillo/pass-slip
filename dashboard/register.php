@@ -1,3 +1,10 @@
+<?php
+session_start();
+$error   = $_SESSION['registerError'] ?? '';
+$success = $_SESSION['registerSuccess'] ?? '';
+unset($_SESSION['registerError'], $_SESSION['registerSuccess']);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,18 +28,31 @@
         <div class="header-spacer"></div>
       </div>
       <h6>Enter valid credentials to register your account</h6>
-      <form action="dashboard/register.php" method="post">
+
+      <?php if ($error): ?>
+        <p class="form-error"><?= htmlspecialchars($error) ?></p>
+      <?php endif; ?>
+      <?php if ($success): ?>
+        <p class="form-success"><?= htmlspecialchars($success) ?></p>
+      <?php endif; ?>
+
+      <form action="/auth/register_auth.php" method="POST">
+        <input type="hidden" name="action" value="register">
+
+        <!-- Currently the handling of validation errors is server-side and handled by register_auth.php. -->
         <label for="fullname"></label>
-        <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required>
+        <input type="text" id="fullname" name="fullname" placeholder="Enter full name">
 
         <label for="username"></label>
-        <input type="text" id="username" name="username" placeholder="Enter username" required>
+        <input type="text" id="username" name="username" placeholder="Enter username">
 
         <label for="password"></label>
         <div class="password-container">
-          <input type="password" id="password" name="password" placeholder="Enter password" required>
+          <input type="password" id="password" name="password" placeholder="Enter password">
           <i class="fa-solid fa-eye toggle-password"></i>
         </div>
+
+        <input type="hidden" name="role" value="student">
 
         <button type="submit">Register</button>
 

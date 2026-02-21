@@ -117,3 +117,19 @@ h6 {
   color: #888;
   font-size: 18px;
 }
+
+.form-error { 
+  color: #842029; 
+  background: #f8d7da; 
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  margin-bottom: 10px; 
+}
+
+.form-success { 
+  color: #0f5132; 
+  background: #d1e7dd; 
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  margin-bottom: 10px; 
+}

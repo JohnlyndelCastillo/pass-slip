@@ -1,3 +1,9 @@
+<?php
+session_start();
+$error = $_SESSION['loginError'] ?? '';
+unset($_SESSION['loginError']);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,13 +22,20 @@
     <div class="login-form">
       <h2>Login</h2>
       <h6>Enter your credentials to access your account</h6>
-      <form action="dashboard/login.php" method="post">
+
+      <?php if ($error): ?>
+        <p class="form-error"><?= htmlspecialchars($error) ?></p>
+      <?php endif; ?>
+
+      <form action="/auth/login_auth.php" method="POST">
+
+        <!-- Currently the handling of validation errors is server-side and handled by login_auth.php. -->
         <label for="username"></label>
-        <input type="text" id="username" name="username" placeholder="Enter username" required>
+        <input type="text" id="username" name="username" placeholder="Enter username">
 
         <label for="password"></label>
         <div class="password-container">
-          <input type="password" id="password" name="password" placeholder="Enter password" required>
+          <input type="password" id="password" name="password" placeholder="Enter password">
           <i class="fa-solid fa-eye toggle-password"></i>
         </div>
 

@@ -90,3 +90,11 @@ a {
   color: #008BFF;
   text-decoration: none;
 }
+
+.form-error { 
+  color: #842029; 
+  background: #f8d7da; 
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  margin-bottom: 10px; 
+}
