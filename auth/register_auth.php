@@ -46,7 +46,7 @@ if ($action === 'register') {
   $stmt->bind_param("ssss", $fullname, $username, $hashed_password, $role);
 
   if ($stmt->execute()) {
-    $_SESSION['registerSuccess'] = "Registration successful! You can now log in.";
+    $_SESSION['registerSuccess'] = "";
     header("Location: /dashboard/login.php");
   } else {
     $_SESSION['registerError'] = "Something went wrong. Please try again.";
