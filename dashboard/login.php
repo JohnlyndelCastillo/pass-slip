@@ -36,7 +36,7 @@ unset($_SESSION['loginError']);
         <label for="password"></label>
         <div class="password-container">
           <input type="password" id="password" name="password" placeholder="Enter password">
-          <i class="fa-solid fa-eye toggle-password"></i>
+          <i class="fa-solid fa-eye toggle-password" onclick="showPassword()"></i>
         </div>
 
         <button type="submit">Login</button>
@@ -45,6 +45,7 @@ unset($_SESSION['loginError']);
       </form>
     </div>
   </div>
+  <script src="../public/js/show_password.js"></script>
 </body>
 
 </html>

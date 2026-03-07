@@ -25,7 +25,7 @@ if ($result->num_rows === 1) {
     $_SESSION['fullname'] = $user['fullname'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['role'] = $user['role'];
-    header("Location: /dashboard/student-request-page.php");
+    header("Location: /dashboard/student_request_page.php");
     exit;
   }
 }

@@ -13,11 +13,11 @@ unset($_SESSION['registerError'], $_SESSION['registerSuccess']);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register</title>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/public/css/register-style.css?v=1.0">
+  <link rel="stylesheet" href="/public/css/register_style.css?v=1.0">
   <link rel=" stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<script src="../public/js/register-back-button.js"></script>
+<script src="../public/js/register_back_button.js"></script>
 
 <body>
   <div id="register-container">
@@ -49,7 +49,7 @@ unset($_SESSION['registerError'], $_SESSION['registerSuccess']);
         <label for="password"></label>
         <div class="password-container">
           <input type="password" id="password" name="password" placeholder="Enter password">
-          <i class="fa-solid fa-eye toggle-password"></i>
+          <i class="fa-solid fa-eye toggle-password" onclick="showPassword()"></i>
         </div>
 
         <input type="hidden" name="role" value="student">
@@ -59,6 +59,7 @@ unset($_SESSION['registerError'], $_SESSION['registerSuccess']);
       </form>
     </div>
   </div>
+  <script src="../public/js/show_password.js"></script>
 </body>
 
 </html>
