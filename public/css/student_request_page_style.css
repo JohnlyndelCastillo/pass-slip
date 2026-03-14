@@ -357,8 +357,12 @@ body {
   max-width: 160px;
 }
 
+.form-group-sm-1 {
+  max-width: 140px;
+}
+
 .form-label {
-  font-size: 13px;
+  font-size: 14px;
   color: #6b7280;
 }
 
