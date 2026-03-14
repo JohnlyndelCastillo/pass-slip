@@ -2,7 +2,6 @@
 --
 -- Host: localhost    Database: pass_slip_system
 -- ------------------------------------------------------
--- Server version	8.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -15,13 +14,11 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
+-- -------------------------------------------------------
 -- Table structure for table `users`
---
+-- -------------------------------------------------------
 
 DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `fullname` varchar(255) DEFAULT NULL,
@@ -32,18 +29,51 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
+-- -------------------------------------------------------
+-- Table structure for table `pass_slips`
+-- -------------------------------------------------------
+
+DROP TABLE IF EXISTS `pass_slips`;
+CREATE TABLE `pass_slips` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `category` enum('individual','section') NOT NULL,
+  `requesting_student` varchar(255) NOT NULL,
+  `section` varchar(100) DEFAULT NULL,
+  `request_date` date NOT NULL,
+  `request_time` time NOT NULL,
+  `purpose` varchar(255) NOT NULL,
+  `class_adviser` varchar(255) DEFAULT NULL,
+  `technology_head` varchar(255) DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  `approval_status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `approval_date` date DEFAULT NULL,
+  `approved_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- -------------------------------------------------------
 -- Dumping data for table `users`
---
+-- -------------------------------------------------------
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+-- -------------------------------------------------------
+-- Dumping data for table `pass_slips`
+-- -------------------------------------------------------
+
+LOCK TABLES `pass_slips` WRITE;
+/*!40000 ALTER TABLE `pass_slips` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pass_slips` ENABLE KEYS */;
+UNLOCK TABLES;
+
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -51,5 +81,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2026-02-15  4:13:01
