@@ -229,7 +229,8 @@ body {
   display: block;
 }
 
-.dropdown a {
+.dropdown a,
+.dropdown-delete {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -240,12 +241,24 @@ body {
   transition: background 0.12s;
 }
 
-.dropdown a:hover {
+.dropdown a:hover,
+.dropdown-delete:hover {
   background: #f3f4f6;
 }
 
-.dropdown a.danger {
+.dropdown a.danger,
+.dropdown-delete {
   color: #c0392b;
+}
+
+/* Reset button styles to match links */
+.dropdown form { margin: 0; }
+.dropdown-delete {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Albert Sans', sans-serif;
 }
 
 

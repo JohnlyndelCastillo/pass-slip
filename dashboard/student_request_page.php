@@ -92,7 +92,7 @@ $result = $stmt->get_result();
                   <td><?= htmlspecialchars($row['approved_by'] ?? '—') ?></td>
                   <td class="row-menu">
                     <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
-                    <?php rowDropdown('edit.php?id=' . $row['id'], 'delete.php?id=' . $row['id']); ?>
+                    <?php rowDropdown('edit.php?id=' . $row['id'], $row['id']); ?>
                   </td>
                 </tr>
               <?php endwhile; ?>
