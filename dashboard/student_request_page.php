@@ -5,6 +5,7 @@ if (!isset($_SESSION['user_id'])) {
   exit;
 }
 require_once '../components/table_actions.php';
+include __DIR__ . '/../components/modal_create_pass_slip.php';
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +51,7 @@ require_once '../components/table_actions.php';
     <main class="main-content">
       <div class="page-header">
         <h1 class="page-title">Requests</h1>
-        <button class="btn-file-slip">
+        <button class="btn-file-slip" onclick="openModal()">
           <i class="fa-solid fa-plus"></i>
           File Slip
         </button>
@@ -119,4 +120,5 @@ require_once '../components/table_actions.php';
       </div>
   </div>
   <script src="/public/js/show_action_menu.js"></script>
+  <script src="/public/js/modal_file_slip.js"></script>
 </body>
