@@ -35,11 +35,11 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Requesting Student</label>
-            <input type="text" class="form-input" placeholder="Enter full name">
+            <input type="text" name="requesting_student" class="form-input" placeholder="Enter full name">
           </div>
           <div class="form-group">
             <label class="form-label">Section</label>
-            <select class="form-select">
+            <select name="section" class="form-select">
               <option value="" disabled selected>Enter section</option>
               <option>Section A</option>
               <option>Section B</option>
@@ -51,15 +51,15 @@
         <div class="form-row">
           <div class="form-group form-group-sm">
             <label class="form-label">Request Date</label>
-            <input type="date" class="form-input">
+            <input type="date" name="request_date" class="form-input">
           </div>
           <div class="form-group form-group-sm">
             <label class="form-label">Time</label>
-            <input type="time" class="form-input">
+            <input type="time" name="request_time" class="form-input">
           </div>
           <div class="form-group">
             <label class="form-label">Purpose</label>
-            <input type="text" class="form-input" placeholder="Enter purpose">
+            <input type="text" name="purpose" class="form-input" placeholder="Enter purpose">
           </div>
         </div>
 
@@ -67,7 +67,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Class Adviser</label>
-            <select class="form-select">
+            <select name="class_adviser" class="form-select">
               <option value="" disabled selected>Select class adviser</option>
               <option>Mr. Manatad</option>
               <option>Mr. Loquinario</option>
@@ -78,7 +78,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Technology Head</label>
-            <select class="form-select">
+            <select name="technology_head" class="form-select">
               <option value="" disabled selected>Select technology head</option>
               <option>Mr. Paredes</option>
               <option>Mr. Lauria</option>
@@ -91,7 +91,7 @@
         <!-- Note -->
         <div class="form-group">
           <label class="form-label">Note</label>
-          <textarea class="form-textarea" rows="4"></textarea>
+          <textarea name="note" class="form-textarea" rows="4"></textarea>
         </div>
 
         <!-- Modal Footer -->

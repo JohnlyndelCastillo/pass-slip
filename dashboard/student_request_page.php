@@ -4,8 +4,13 @@ if (!isset($_SESSION['user_id'])) {
   header("Location: /dashboard/login.php");
   exit;
 }
-require_once '../components/table_actions.php';
-include __DIR__ . '/../components/modal_create_pass_slip.php';
+require_once __DIR__ . '/../components/table_actions.php';
+require_once __DIR__ . '/../includes/db.php';
+
+$stmt = $conn->prepare("SELECT * FROM pass_slips WHERE user_id = ?");
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -49,6 +54,12 @@ include __DIR__ . '/../components/modal_create_pass_slip.php';
 
     <!-- Main Content -->
     <main class="main-content">
+
+      <?php if (!empty($_SESSION['slipError'])): ?>
+        <p class="form-error"><?= htmlspecialchars($_SESSION['slipError']) ?></p>
+        <?php unset($_SESSION['slipError']); ?>
+      <?php endif; ?>
+
       <div class="page-header">
         <h1 class="page-title">Requests</h1>
         <button class="btn-file-slip" onclick="openModal()">
@@ -71,54 +82,34 @@ include __DIR__ . '/../components/modal_create_pass_slip.php';
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="row-title"><a href="#">32H Early Out to Leave Class</a></td>
-              <td>2024-06-01</td>
-              <td><span class="badge badge-pending">Pending</span></td>
-              <td>2024-06-01</td>
-              <td>John Doe</td>
-              <td class="row-menu">
-                <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
-                <?php rowDropdown('edit.php?id=1', 'delete.php?id=1'); ?>
-              </td>
-            </tr>
-            <tr>
-              <td class="row-title"><a href="#">32H Early Out to Leave Class</a></td>
-              <td>2024-06-02</td>
-              <td><span class="badge badge-approved">Approved</span></td>
-              <td>2024-06-02</td>
-              <td>John Doe</td>
-              <td class="row-menu">
-                <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
-                <?php rowDropdown('edit.php?id=1', 'delete.php?id=1'); ?>
-              </td>
-            </tr>
-            <tr>
-              <td class="row-title"><a href="#">32H Early Out to Leave Class</a></td>
-              <td>2024-06-03</td>
-              <td><span class="badge badge-rejected">Rejected</span></td>
-              <td>2024-06-03</td>
-              <td>John Doe</td>
-              <td class="row-menu">
-                <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
-                <?php rowDropdown('edit.php?id=1', 'delete.php?id=1'); ?>
-              </td>
-            </tr>
-            <tr class="empty">
-              <td>&nbsp;</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="row-menu">
-                <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
-                <?php rowDropdown('edit.php?id=2', 'delete.php?id=2'); ?>
-              </td>
-            </tr>
+            <?php if ($result->num_rows > 0): ?>
+              <?php while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                  <td class="row-title"><a href="#"><?= htmlspecialchars($row['purpose']) ?></a></td>
+                  <td><?= date('Y-m-d', strtotime($row['created_at'])) ?></td>
+                  <td><span class="badge badge-<?= $row['approval_status'] ?>"><?= ucfirst($row['approval_status']) ?></span></td>
+                  <td><?= $row['approval_date'] ?? '—' ?></td>
+                  <td><?= htmlspecialchars($row['approved_by'] ?? '—') ?></td>
+                  <td class="row-menu">
+                    <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
+                    <?php rowDropdown('edit.php?id=' . $row['id'], 'delete.php?id=' . $row['id']); ?>
+                  </td>
+                </tr>
+              <?php endwhile; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="6" style="text-align:center; color:#6b7280; padding: 24px;">
+                  No requests found.
+                </td>
+              </tr>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
   </div>
+
+  <?php include __DIR__ . '/../components/modal_create_pass_slip.php'; ?>
+
   <script src="/public/js/show_action_menu.js"></script>
   <script src="/public/js/modal_file_slip.js"></script>
 </body>
