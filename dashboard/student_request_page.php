@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-  header("Location: /dashboard/login.php");
-  exit;
-}
+require_once __DIR__ . '/../middleware/auth_guard.php';
 require_once __DIR__ . '/../components/table_actions.php';
 require_once __DIR__ . '/../includes/db.php';
 
@@ -106,6 +102,7 @@ $result = $stmt->get_result();
           </tbody>
         </table>
       </div>
+    </main>
   </div>
 
   <?php include __DIR__ . '/../components/modal_create_pass_slip.php'; ?>

@@ -1,11 +1,5 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-  header("Location: /dashboard/login.php");
-  exit;
-}
-
+require_once __DIR__ . '/../middleware/auth_guard.php';
 require_once __DIR__ . '/../includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
