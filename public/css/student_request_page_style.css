@@ -75,6 +75,52 @@ body {
   border: 0.5px;
   color: #ffffff;
   background-color:#007E6E;
+   position: relative;
+}
+
+.profile-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.profile-dropdown.open {
+  display: block;
+}
+
+.profile-dropdown a,
+.profile-dropdown-logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 16px;
+  color: #333;
+  text-decoration: none;
+  transition: background 0.12s;
+}
+
+.profile-dropdown a:hover,
+.profile-dropdown-logout:hover {
+  background: #f3f4f6;
+}
+
+.profile-dropdown form { margin: 0; }
+.profile-dropdown-logout {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Albert Sans', sans-serif;
+  color: #c0392b;
 }
 
 /* Side Bar */

@@ -33,8 +33,9 @@ $result = $stmt->get_result();
       <div class="top-bar-bell" title="Notifications">
         <i class="fa-solid fa-bell"></i>
       </div>
-      <div class="top-bar-avatar" title="Profile">
+      <div class="top-bar-avatar" title="Profile" onclick="toggleProfileMenu()">
         <i class="fa-solid fa-user"></i>
+        <?php include __DIR__ . '/../components/profile_actions.php'; ?>
       </div>
     </div>
   </header>
