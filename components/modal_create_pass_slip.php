@@ -71,7 +71,7 @@
             <select name="class_adviser" class="form-select">
               <option value="" disabled selected>Select Class Adviser</option>
               <?php foreach ($staff->class_advisers as $adviser): ?>
-                <option value="<?= $adviser->id ?>"><?= $adviser->name ?></option>
+                <option value="<?= $adviser->name ?>"><?= $adviser->name ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -80,7 +80,7 @@
             <select name="technology_head" class="form-select">
               <option value="" disabled selected>Select Technology Head</option>
               <?php foreach ($staff->technology_heads as $head): ?>
-                <option value="<?= $head->id ?>"><?= $head->name ?></option>
+                <option value="<?= $head->name ?>"><?= $head->name ?></option>
               <?php endforeach; ?>
             </select>
           </div>
