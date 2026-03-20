@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../middleware/auth_guard.php';
 require_once __DIR__ . '/../components/table_actions.php';
 require_once __DIR__ . '/../includes/db.php';
+$sections = json_decode(file_get_contents(__DIR__ . '/../api/data/sections.json'));
+$staff    = json_decode(file_get_contents(__DIR__ . '/../api/data/staff.json'));
 
 $stmt = $conn->prepare("SELECT * FROM pass_slips WHERE user_id = ?");
 $stmt->bind_param("i", $_SESSION['user_id']);

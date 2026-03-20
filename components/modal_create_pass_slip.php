@@ -41,15 +41,9 @@
             <label class="form-label">Section</label>
             <select name="section" class="form-select">
               <option value="" disabled selected>Enter Section</option>
-              <option>32-A</option>
-              <option>32-B</option>
-              <option>32-C</option>
-              <option>32-D</option>
-              <option>32-E</option>
-              <option>32-F</option>
-              <option>32-G</option>
-              <option>32-H</option>
-              <option>32-I</option>
+              <?php foreach ($sections as $section): ?>
+                <option value="<?= $section ?>"><?= $section ?></option>
+              <?php endforeach; ?>
             </select>
           </div>
         </div>
@@ -76,21 +70,18 @@
             <label class="form-label">Class Adviser</label>
             <select name="class_adviser" class="form-select">
               <option value="" disabled selected>Select Class Adviser</option>
-              <option>Mr. Manatad</option>
-              <option>Mr. Loquinario</option>
-              <option>Mr. Bonghanoy</option>
-              <option>Mr. Larobis</option>
-              <option>Mr. Grondiano</option>
+              <?php foreach ($staff->class_advisers as $adviser): ?>
+                <option value="<?= $adviser->id ?>"><?= $adviser->name ?></option>
+              <?php endforeach; ?>
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Technology Head</label>
             <select name="technology_head" class="form-select">
               <option value="" disabled selected>Select Technology Head</option>
-              <option>Mr. Paredes</option>
-              <option>Mr. Lauria</option>
-              <option>Mr. Bonghanoy</option>
-              <option>Mr. Go</option>
+              <?php foreach ($staff->technology_heads as $head): ?>
+                <option value="<?= $head->id ?>"><?= $head->name ?></option>
+              <?php endforeach; ?>
             </select>
           </div>
         </div>

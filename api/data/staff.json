@@ -1,0 +1,46 @@
+{
+  "class_advisers": [
+    {
+      "id": 1,
+      "name": "Mr. Manatad"
+    },
+    {
+      "id": 2,
+      "name": "Mr. Loquinario"
+    },
+    {
+      "id": 3,
+      "name": "Mr. Bonghanoy"
+    },
+    {
+      "id": 4,
+      "name": "Mr. Larobis"
+    },
+    {
+      "id": 5,
+      "name": "Mr. Grondiano"
+    },
+    {
+      "id": 6,
+      "name": "Mr. Agbay"
+    }
+  ],
+  "technology_heads": [
+    {
+      "id": 1,
+      "name": "Mr. Paredes"
+    },
+    {
+      "id": 2,
+      "name": "Mr. Lauria"
+    },
+    {
+      "id": 3,
+      "name": "Mr. Bonghanoy"
+    },
+    {
+      "id": 4,
+      "name": "Mr. Go"
+    }
+  ]
+}
