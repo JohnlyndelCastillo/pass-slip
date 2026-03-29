@@ -25,7 +25,22 @@ if ($result->num_rows === 1) {
     $_SESSION['fullname'] = $user['fullname'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['role'] = $user['role'];
-    header("Location: /dashboard/student_request_page.php");
+    switch ($user['role']) {
+      case 'student':
+        header("Location: /dashboard/student/request_page.php");
+        break;
+      case 'instructor':
+        header("Location: /dashboard/instructor/dashboard.php");
+        break;
+      case 'admin':
+        header("Location: /dashboard/admin/dashboard.php");
+        break;
+      case 'super-admin':
+        header("Location: /dashboard/super-admin/dashboard.php");
+        break;
+      default:
+        header("Location: /dashboard/login.php");
+    }
     exit;
   }
 }

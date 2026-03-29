@@ -1,12 +1,10 @@
 <?php
-require_once __DIR__ . '/../middleware/auth_guard.php';
-require_once __DIR__ . '/../components/table_actions.php';
-require_once __DIR__ . '/../includes/db.php';
-$sections = json_decode(file_get_contents(__DIR__ . '/../api/data/sections.json'));
-$staff    = json_decode(file_get_contents(__DIR__ . '/../api/data/staff.json'));
+$allowedRoles = ['instructor'];
+require_once __DIR__ . '/../../middleware/auth_guard.php';
+require_once __DIR__ . '/../../components/table_actions.php';
+require_once __DIR__ . '/../../includes/db.php';
 
-$stmt = $conn->prepare("SELECT * FROM pass_slips WHERE user_id = ?");
-$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt = $conn->prepare("SELECT ps.*, u.fullname FROM pass_slips ps JOIN users u ON ps.user_id = u.id WHERE ps.approval_status = 'pending'");
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -17,14 +15,16 @@ $result = $stmt->get_result();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Request Pass Slip</title>
+  <title>Approval Page</title>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/public/css/student_request_page_style.css?v=1.0">
+  <link rel="stylesheet" href="/public/css/instructor_approval_page_style.css?v=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
+
   <!-- Top Bar -->
   <header class="top-bar">
     <div class="top-bar-menu">
@@ -37,12 +37,12 @@ $result = $stmt->get_result();
       </div>
       <div class="top-bar-avatar" title="Profile" onclick="toggleProfileMenu()">
         <i class="fa-solid fa-user"></i>
-        <?php include __DIR__ . '/../components/profile_actions.php'; ?>
+        <?php include __DIR__ . '/../../components/profile_actions.php'; ?>
       </div>
     </div>
   </header>
 
-  <!-- Side Bar -->
+  <!-- Side Layout -->
   <div class="side-layout">
     <aside class="side-bar">
       <a class="nav-item active" href="#">
@@ -54,30 +54,25 @@ $result = $stmt->get_result();
     <!-- Main Content -->
     <main class="main-content">
 
-      <?php if (!empty($_SESSION['slipError'])): ?>
-        <p class="form-error"><?= htmlspecialchars($_SESSION['slipError']) ?></p>
-        <?php unset($_SESSION['slipError']); ?>
+      <?php if (!empty($_SESSION['approvalError'])): ?>
+        <p class="form-error"><?= htmlspecialchars($_SESSION['approvalError']) ?></p>
+        <?php unset($_SESSION['approvalError']); ?>
       <?php endif; ?>
 
       <div class="page-header">
-        <h1 class="page-title">Requests</h1>
-        <button class="btn-file-slip" onclick="openModal()">
-          <i class="fa-solid fa-plus"></i>
-          File Slip
-        </button>
+        <h1 class="page-title">Request List</h1>
       </div>
 
-      <!-- Table for displaying requests -->
+      <!-- Table -->
       <div class="table-card">
         <table>
           <thead>
             <tr>
               <th>Title</th>
-              <th>Creation Date</th>
-              <th>Approval Status</th>
-              <th>Approval Date</th>
-              <th>Approved By</th>
-              <th> </th>
+              <th>Request Date</th>
+              <th>Requester</th>
+              <th>Actions</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -89,7 +84,7 @@ $result = $stmt->get_result();
                       data-category="<?= ucfirst(htmlspecialchars($row['category'])) ?>"
                       data-student="<?= htmlspecialchars($row['requesting_student']) ?>"
                       data-section="<?= htmlspecialchars($row['section'] ?? '—') ?>"
-                      data-date="<?= date('M d, Y', strtotime($row['request_date'])) ?>"
+                      data-date="<?= $row['request_date'] ?>"
                       data-time="<?= date('h:i A', strtotime($row['request_time'])) ?>"
                       data-purpose="<?= htmlspecialchars($row['purpose']) ?>"
                       data-adviser="<?= htmlspecialchars($row['class_adviser'] ?? '—') ?>"
@@ -100,32 +95,50 @@ $result = $stmt->get_result();
                       <?= htmlspecialchars($row['purpose']) ?>
                     </a>
                   </td>
-                  <td><?= date('Y-m-d', strtotime($row['created_at'])) ?></td>
-                  <td><span class="badge badge-<?= $row['approval_status'] ?>"><?= ucfirst($row['approval_status']) ?></span></td>
-                  <td><?= $row['approval_date'] ?? '—' ?></td>
-                  <td><?= htmlspecialchars($row['approved_by'] ?? '—') ?></td>
+                  <td><?= date('Y-m-d', strtotime($row['request_date'])) ?></td>
+                  <td><?= htmlspecialchars($row['section'] ?? '—') ?></td>
+                  <td>
+                    <div class="row-actions">
+                      <form action="/auth/approve_slip.php" method="POST">
+                        <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                        <button type="submit" class="btn-approve">
+                          <i class="fa-solid fa-check"></i> Approve
+                        </button>
+                      </form>
+                      <form action="/auth/reject_slip.php" method="POST">
+                        <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                        <button type="submit" class="btn-reject"
+                          onclick="return confirm('Are you sure you want to reject this slip?')">
+                          <i class="fa-solid fa-x"></i> Reject
+                        </button>
+                      </form>
+                    </div>
+                  </td>
                   <td class="row-menu">
                     <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
-                    <?php rowDropdown('edit.php?id=' . $row['id'], $row['id']); ?>
+                    <?php rowDropdown('#', $row['id']); ?>
                   </td>
                 </tr>
               <?php endwhile; ?>
             <?php else: ?>
               <tr>
-                <td colspan="6" style="text-align:center; color:#6b7280; padding: 24px;">
-                  No requests found.
+                <td colspan="5" style="text-align:center; color:#6b7280; padding: 24px;">
+                  No pending requests found.
                 </td>
               </tr>
             <?php endif; ?>
           </tbody>
         </table>
       </div>
+
     </main>
   </div>
 
-  <?php include __DIR__ . '/../components/modal_create_pass_slip.php'; ?>
-  <?php include __DIR__ . '/../components/modal_slip_details.php'; ?>
+  <?php include __DIR__ . '/../../components/modal_slip_details.php'; ?>
 
   <script src="/public/js/show_action_menu.js"></script>
   <script src="/public/js/modal_file_slip.js"></script>
+
 </body>
+
+</html>
