@@ -84,7 +84,22 @@ $result = $stmt->get_result();
             <?php if ($result->num_rows > 0): ?>
               <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
-                  <td class="row-title"><a href="#"><?= htmlspecialchars($row['purpose']) ?></a></td>
+                  <td class="row-title">
+                    <a href="#" onclick="openDetailsModal(this)"
+                      data-category="<?= ucfirst(htmlspecialchars($row['category'])) ?>"
+                      data-student="<?= htmlspecialchars($row['requesting_student']) ?>"
+                      data-section="<?= htmlspecialchars($row['section'] ?? '—') ?>"
+                      data-date="<?= date('M d, Y', strtotime($row['request_date'])) ?>"
+                      data-time="<?= date('h:i A', strtotime($row['request_time'])) ?>"
+                      data-purpose="<?= htmlspecialchars($row['purpose']) ?>"
+                      data-adviser="<?= htmlspecialchars($row['class_adviser'] ?? '—') ?>"
+                      data-techhead="<?= htmlspecialchars($row['technology_head'] ?? '—') ?>"
+                      data-note="<?= htmlspecialchars($row['note'] ?? '—') ?>"
+                      data-status="<?= $row['approval_status'] ?>"
+                      data-created="<?= date('M d, Y', strtotime($row['created_at'])) ?>">
+                      <?= htmlspecialchars($row['purpose']) ?>
+                    </a>
+                  </td>
                   <td><?= date('Y-m-d', strtotime($row['created_at'])) ?></td>
                   <td><span class="badge badge-<?= $row['approval_status'] ?>"><?= ucfirst($row['approval_status']) ?></span></td>
                   <td><?= $row['approval_date'] ?? '—' ?></td>
@@ -109,6 +124,7 @@ $result = $stmt->get_result();
   </div>
 
   <?php include __DIR__ . '/../components/modal_create_pass_slip.php'; ?>
+  <?php include __DIR__ . '/../components/modal_slip_details.php'; ?>
 
   <script src="/public/js/show_action_menu.js"></script>
   <script src="/public/js/modal_file_slip.js"></script>
