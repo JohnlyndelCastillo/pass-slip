@@ -37,16 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($stmt->execute()) {
     $stmt->close();
     $conn->close();
-    header("Location: /dashboard/student_request_page.php");
+    header("Location: /dashboard/student/request_page.php");
     exit;
   } else {
     // Store error and redirect back
     $_SESSION['slipError'] = "Failed to create pass slip. Please try again.";
-    header("Location: /dashboard/student_request_page.php");
+    header("Location: /dashboard/student/request_page.php");
     exit;
   }
 }
 
 // Block direct access
-header("Location: /dashboard/student_request_page.php");
+header("Location: /dashboard/student/request_page.php");
 exit;
