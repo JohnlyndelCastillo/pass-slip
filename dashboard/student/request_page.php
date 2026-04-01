@@ -8,9 +8,9 @@ $sections = json_decode(file_get_contents(__DIR__ . '/../../api/data/sections.js
 $staff    = json_decode(file_get_contents(__DIR__ . '/../../api/data/staff.json'));
 
 $stmt = $conn->prepare("
-  SELECT ps.*, u.fullname AS approved_by_name 
+  SELECT ps.*, u.fullname AS reviewed_by_name 
   FROM pass_slips ps
-  LEFT JOIN users u ON ps.approved_by = u.id
+  LEFT JOIN users u ON ps.reviewed_by = u.id
   WHERE ps.user_id = ?
 ");
 $stmt->bind_param("i", $_SESSION['user_id']);
@@ -109,8 +109,8 @@ $result = $stmt->get_result();
                   </td>
                   <td><?= date('Y-m-d', strtotime($row['created_at'])) ?></td>
                   <td><span class="badge badge-<?= $row['approval_status'] ?>"><?= ucfirst($row['approval_status']) ?></span></td>
-                  <td><?= $row['approval_date'] ?? '—' ?></td>
-                  <td><?= htmlspecialchars($row['approved_by_name'] ?? '—') ?></td>
+                  <td><?= $row['status_date'] ?? '—' ?></td>
+                  <td><?= htmlspecialchars($row['reviewed_by_name'] ?? '—') ?></td>
                   <td class="row-menu">
                     <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
                     <?php rowDropdown('edit.php?id=' . $row['id'], $row['id']); ?>
