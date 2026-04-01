@@ -30,13 +30,19 @@ if ($result->num_rows === 1) {
         header("Location: /dashboard/student/request_page.php");
         break;
       case 'instructor':
-        header("Location: /dashboard/instructor/dashboard.php");
+        header("Location: /dashboard/instructor/approval_page.php");
+        break;
+      case 'adviser':
+        header("Location: /dashboard/adviser/approval_page.php");
+        break;
+      case 'technology_head':
+        header("Location: /dashboard/technology_head/approval_page.php");
+        break;
+      case 'csd_council':
+        header("Location: /dashboard/csd_council/approval_page.php");
         break;
       case 'admin':
         header("Location: /dashboard/admin/dashboard.php");
-        break;
-      case 'super-admin':
-        header("Location: /dashboard/super-admin/dashboard.php");
         break;
       default:
         header("Location: /dashboard/login.php");

@@ -24,11 +24,12 @@ CREATE TABLE `users` (
   `fullname` varchar(255) DEFAULT NULL,
   `username` varchar(50) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `role` enum('student','instructor','super-admin','admin') NOT NULL DEFAULT 'student',
+  `role` enum('student','instructor','adviser','technology_head','csd_council','admin') NOT NULL DEFAULT 'student',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 -- -------------------------------------------------------
 -- Table structure for table `pass_slips`
@@ -47,13 +48,18 @@ CREATE TABLE `pass_slips` (
   `class_adviser` varchar(255) DEFAULT NULL,
   `technology_head` varchar(255) DEFAULT NULL,
   `note` text DEFAULT NULL,
-  `approval_status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
-  `approval_date` date DEFAULT NULL,
-  `approved_by` int DEFAULT NULL,
+  `approval_status` enum('pending','teacher_approved','adviser_approved','techhead_approved','fully_approved','rejected') NOT NULL DEFAULT 'pending',
+  `status_date` date DEFAULT NULL,
+  `reviewed_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- Seed admin
+INSERT INTO `users` (fullname, username, password, role)
+VALUES ('Admin', 'admin', '$2y$10$5Flo8n5h/JHUNkzSXQBPfeUAZdCctwQaIkragehG1wiEFo0bOAeEK', 'admin');
 
 -- -------------------------------------------------------
 -- Dumping data for table `users`
