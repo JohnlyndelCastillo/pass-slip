@@ -17,7 +17,10 @@ $result = $stmt->get_result();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/public/css/student_request_page_style.css?v=1.0">
+  <link rel="stylesheet" href="/public/css/common.css?v=1.0">
+  <link rel="stylesheet" href="/public/css/approval-badge/admin_role_badge_style.css?v=1.0">
+  <link rel="stylesheet" href="/public/css/form/form_common_style.css?v=1.0">
+  <link rel="stylesheet" href="/public/css/modal/modal_component_style.css?v=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -92,7 +95,7 @@ $result = $stmt->get_result();
                 <tr>
                   <td><?= htmlspecialchars($row['fullname']) ?></td>
                   <td><?= htmlspecialchars($row['username']) ?></td>
-                  <td><span class="badge role-<?= $row['role'] ?>"><?= ucwords(str_replace('_', ' ', $row['role'])) ?></span></td>
+                  <td><span class="role-<?= $row['role'] ?>"><?= ucwords(str_replace('_', ' ', $row['role'])) ?></span></td>
                   <td><?= date('M d, Y', strtotime($row['created_at'])) ?></td>
                   <td class="row-menu">
                     <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
