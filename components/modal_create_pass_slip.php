@@ -70,17 +70,18 @@
             <label class="form-label">Class Adviser</label>
             <select name="class_adviser" class="form-select">
               <option value="" disabled selected>Select Class Adviser</option>
-              <?php foreach ($staff->class_advisers as $adviser): ?>
-                <option value="<?= $adviser->name ?>"><?= $adviser->name ?></option>
+              <?php foreach ($advisers as $adviserRow): ?>
+                <option value="<?= $adviserRow['id'] ?>"><?= htmlspecialchars($adviserRow['fullname']) ?></option>
               <?php endforeach; ?>
+
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Technology Head</label>
             <select name="technology_head" class="form-select">
               <option value="" disabled selected>Select Technology Head</option>
-              <?php foreach ($staff->technology_heads as $head): ?>
-                <option value="<?= $head->name ?>"><?= $head->name ?></option>
+              <?php foreach ($techHeads as $headRow): ?>
+                <option value="<?= $headRow['id'] ?>"><?= htmlspecialchars($headRow['fullname']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>

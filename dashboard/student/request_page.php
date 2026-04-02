@@ -5,12 +5,24 @@ require_once __DIR__ . '/../../components/table_actions.php';
 require_once __DIR__ . '/../../includes/db.php';
 
 $sections = json_decode(file_get_contents(__DIR__ . '/../../api/data/sections.json'));
-$staff    = json_decode(file_get_contents(__DIR__ . '/../../api/data/staff.json'));
+
+$adviserStmt = $conn->prepare("SELECT id, fullname FROM users WHERE role = 'adviser'");
+$adviserStmt->execute();
+$advisers = $adviserStmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+$techHeadStmt = $conn->prepare("SELECT id, fullname FROM users WHERE role = 'technology_head'");
+$techHeadStmt->execute();
+$techHeads = $techHeadStmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 $stmt = $conn->prepare("
-  SELECT ps.*, u.fullname AS reviewed_by_name 
+  SELECT ps.*, 
+    u.fullname AS reviewed_by_name,
+    a.fullname AS adviser_name,
+    t.fullname AS techhead_name
   FROM pass_slips ps
   LEFT JOIN users u ON ps.reviewed_by = u.id
+  LEFT JOIN users a ON ps.class_adviser = a.id
+  LEFT JOIN users t ON ps.technology_head = t.id
   WHERE ps.user_id = ?
 ");
 $stmt->bind_param("i", $_SESSION['user_id']);
@@ -99,8 +111,8 @@ $result = $stmt->get_result();
                       data-date="<?= date('M d, Y', strtotime($row['request_date'])) ?>"
                       data-time="<?= date('h:i A', strtotime($row['request_time'])) ?>"
                       data-purpose="<?= htmlspecialchars($row['purpose']) ?>"
-                      data-adviser="<?= htmlspecialchars($row['class_adviser'] ?? '—') ?>"
-                      data-techhead="<?= htmlspecialchars($row['technology_head'] ?? '—') ?>"
+                      data-adviser="<?= htmlspecialchars($row['adviser_name'] ?? '—') ?>"
+                      data-techhead="<?= htmlspecialchars($row['techhead_name'] ?? '—') ?>"
                       data-note="<?= htmlspecialchars($row['note'] ?? '—') ?>"
                       data-status="<?= $row['approval_status'] ?>"
                       data-created="<?= date('M d, Y', strtotime($row['created_at'])) ?>">
@@ -136,3 +148,5 @@ $result = $stmt->get_result();
   <script src="/public/js/show_action_menu.js"></script>
   <script src="/public/js/modal_file_slip.js"></script>
 </body>
+
+</html>
