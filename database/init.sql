@@ -15,10 +15,17 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- -------------------------------------------------------
+-- Drop tables in correct order (child tables first)
+-- -------------------------------------------------------
+
+DROP TABLE IF EXISTS `notifications`;
+DROP TABLE IF EXISTS `pass_slips`;
+DROP TABLE IF EXISTS `users`;
+
+-- -------------------------------------------------------
 -- Table structure for table `users`
 -- -------------------------------------------------------
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `fullname` varchar(255) DEFAULT NULL,
@@ -30,12 +37,10 @@ CREATE TABLE `users` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
 -- -------------------------------------------------------
 -- Table structure for table `pass_slips`
 -- -------------------------------------------------------
 
-DROP TABLE IF EXISTS `pass_slips`;
 CREATE TABLE `pass_slips` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
@@ -56,8 +61,26 @@ CREATE TABLE `pass_slips` (
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- -------------------------------------------------------
+-- Table structure for table `notifications`
+-- -------------------------------------------------------
 
--- Seed admin
+CREATE TABLE `notifications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `slip_id` int NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`slip_id`) REFERENCES `pass_slips`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- -------------------------------------------------------
+-- Seed admin user
+-- -------------------------------------------------------
+
 INSERT INTO `users` (fullname, username, password, role)
 VALUES ('Admin', 'admin', '$2y$10$5Flo8n5h/JHUNkzSXQBPfeUAZdCctwQaIkragehG1wiEFo0bOAeEK', 'admin');
 
@@ -77,6 +100,15 @@ UNLOCK TABLES;
 LOCK TABLES `pass_slips` WRITE;
 /*!40000 ALTER TABLE `pass_slips` DISABLE KEYS */;
 /*!40000 ALTER TABLE `pass_slips` ENABLE KEYS */;
+UNLOCK TABLES;
+
+-- -------------------------------------------------------
+-- Dumping data for table `notifications`
+-- -------------------------------------------------------
+
+LOCK TABLES `notifications` WRITE;
+/*!40000 ALTER TABLE `notifications` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notifications` ENABLE KEYS */;
 UNLOCK TABLES;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
