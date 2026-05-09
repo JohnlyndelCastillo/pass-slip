@@ -14,9 +14,10 @@ document.getElementById('createSlipModal').addEventListener('click', function (e
 });
 
 // Open profile dropdown
-function toggleProfileMenu() {
+function toggleProfileMenu(event) {
+  event.stopPropagation();
   const dropdown = document.getElementById('profileDropdown');
-  dropdown.classList.toggle('open');
+  if (dropdown) dropdown.classList.toggle('open');
 }
 
 // Close when clicking outside
@@ -56,6 +57,20 @@ function openDetailsModal(el) {
 function closeDetailsModal() {
   document.getElementById('slipDetailsModal').classList.remove('open');
 }
+
+function toggleNotifications(event) {
+  event.stopPropagation();
+  const dropdown = document.getElementById('notificationDropdown');
+  if (dropdown) dropdown.classList.toggle('open');
+}
+
+// Close when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.top-bar-bell')) {
+    const dropdown = document.getElementById('notificationDropdown');
+    if (dropdown) dropdown.classList.remove('open');
+  }
+});
 
 // Close when clicking outside
 document.getElementById('slipDetailsModal').addEventListener('click', function (e) {

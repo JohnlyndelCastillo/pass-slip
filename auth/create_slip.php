@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../middleware/auth_guard.php';
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/notifications.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $user_id            = $_SESSION['user_id'];
@@ -35,6 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   );
 
   if ($stmt->execute()) {
+
+    // Get the new slip id after successful insert
+    $slip_id = $conn->insert_id;
+
+    // Notify all instructors
+    notifyByRole($conn, 'instructor', $slip_id, "A new pass slip has been submitted and requires your approval.");
+
     $stmt->close();
     $conn->close();
     header("Location: /dashboard/student/request_page.php");

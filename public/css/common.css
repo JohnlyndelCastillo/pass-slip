@@ -4,6 +4,7 @@
 @import url('/public/css/approval-button/approval_button_style.css');
 @import url('/public/css/modal/modal_component_style.css');
 @import url('/public/css/form/form_common_style.css');
+@import url('/public/css/notifications/notification_style.css');
 
 * {
   margin: 0;

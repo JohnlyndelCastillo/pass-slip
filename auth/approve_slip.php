@@ -2,6 +2,7 @@
 $allowedRoles = ['instructor', 'adviser', 'technology_head', 'csd_council'];
 require_once __DIR__ . '/../middleware/auth_guard.php';
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/notifications.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $id          = $_POST['id'];
@@ -47,6 +48,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $stmt->bind_param("sisi", $status, $reviewed_by, $status_date, $id);
 
   if ($stmt->execute()) {
+
+    // After successful update, notify next role
+    $nextNotify = [
+      'instructor'      => ['role' => 'adviser',          'message' => 'A pass slip has been approved by the instructor and requires your approval.'],
+      'adviser'         => ['role' => 'technology_head',  'message' => 'A pass slip has been approved by the adviser and requires your approval.'],
+      'technology_head' => ['role' => 'csd_council',      'message' => 'A pass slip has been approved by the technology head and requires your approval.'],
+      'csd_council'     => ['role' => null,               'message' => null],
+    ];
+
+    if ($nextNotify[$role]['role']) {
+      notifyByRole($conn, $nextNotify[$role]['role'], $id, $nextNotify[$role]['message']);
+    } else {
+      // Fully approved — notify the student
+      $slipStmt = $conn->prepare("SELECT user_id FROM pass_slips WHERE id = ?");
+      $slipStmt->bind_param("i", $id);
+      $slipStmt->execute();
+      $slip = $slipStmt->get_result()->fetch_assoc();
+      createNotification($conn, $slip['user_id'], $id, "Your pass slip has been fully approved!");
+    }
+
     $stmt->close();
     $conn->close();
     header("Location: /dashboard/{$role}/approval_page.php");

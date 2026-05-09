@@ -2,6 +2,9 @@
 $allowedRoles = ['admin'];
 require_once __DIR__ . '/../../middleware/auth_guard.php';
 require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/notifications.php';
+
+$unreadCount = getUnreadCount($conn, $_SESSION['user_id']);
 
 // Fetch all non-admin users
 $stmt = $conn->prepare("SELECT id, fullname, username, role, created_at FROM users WHERE role != 'admin'");
@@ -31,10 +34,14 @@ $result = $stmt->get_result();
     </div>
     <div class="top-bar-spacer"></div>
     <div class="top-bar-actions">
-      <div class="top-bar-bell" title="Notifications">
+      <div class="top-bar-bell" title="Notifications" onclick="toggleNotifications(event)">
         <i class="fa-solid fa-bell"></i>
+        <?php if ($unreadCount > 0): ?>
+          <span class="notification-badge"><?= $unreadCount ?></span>
+        <?php endif; ?>
+        <?php include __DIR__ . '/../../components/notifications_dropdown.php'; ?>
       </div>
-      <div class="top-bar-avatar" title="Profile" onclick="toggleProfileMenu()">
+      <div class="top-bar-avatar" title="Profile" onclick="toggleProfileMenu(event)">
         <i class="fa-solid fa-user"></i>
         <?php include __DIR__ . '/../../components/profile_actions.php'; ?>
       </div>
