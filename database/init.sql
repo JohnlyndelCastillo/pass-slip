@@ -15,7 +15,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- -------------------------------------------------------
--- Drop tables in correct order (child tables first)
+-- Drop tables if they exist
 -- -------------------------------------------------------
 
 DROP TABLE IF EXISTS `notifications`;
