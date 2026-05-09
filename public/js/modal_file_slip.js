@@ -44,7 +44,10 @@ function openDetailsModal(el) {
   document.getElementById('detail-created').textContent = d.created;
 
   const statusEl = document.getElementById('detail-status');
-  statusEl.textContent = d.status.charAt(0).toUpperCase() + d.status.slice(1);
+  statusEl.textContent = d.status
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
   statusEl.className = `badge badge-${d.status}`;
 
   document.getElementById('slipDetailsModal').classList.add('open');

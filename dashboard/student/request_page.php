@@ -39,9 +39,6 @@ $result = $stmt->get_result();
   <title>Request Pass Slip</title>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/public/css/common.css?v=1.0">
-  <link rel="stylesheet" href="/public/css/approval-badge/approval_status_badge_style.css?v=1.0">
-  <link rel="stylesheet" href="/public/css/form/form_common_style.css?v=1.0">
-  <link rel="stylesheet" href="/public/css/modal/modal_component_style.css?v=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -123,7 +120,7 @@ $result = $stmt->get_result();
                     </a>
                   </td>
                   <td><?= date('Y-m-d', strtotime($row['created_at'])) ?></td>
-                  <td><span class="badge badge-<?= $row['approval_status'] ?>"><?= ucfirst($row['approval_status']) ?></span></td>
+                  <td><span class="badge badge-<?= $row['approval_status'] ?>"><?= ucwords(str_replace('_', ' ', $row['approval_status'])) ?></span></td>
                   <td><?= $row['status_date'] ?? '—' ?></td>
                   <td><?= htmlspecialchars($row['reviewed_by_name'] ?? '—') ?></td>
                   <td class="row-menu">

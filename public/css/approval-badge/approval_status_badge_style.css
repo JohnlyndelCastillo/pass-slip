@@ -2,6 +2,12 @@
 :root {
   --pending-bg: #FAB95B;
   --pending-text: #ffffff;
+  --teacher-approved-bg: #1565c0;
+  --teacher-approved-text: #ffffff;
+  --adviser-approved-bg: #6a1b9a;
+  --adviser-approved-text: #ffffff;
+  --techhead-approved-bg: #f57f17;
+  --techhead-approved-text: #ffffff;
   --approved-bg: #2e7d32;
   --approved-text: #ffffff;
   --rejected-bg: #FB4141;
@@ -19,13 +25,27 @@
   letter-spacing: 0.5px;
 }
 
-
 .badge-pending {
   background: var(--pending-bg);
   color: var(--pending-text);
 }
-    
-.badge-approved {
+
+.badge-teacher_approved {
+  background: var(--teacher-approved-bg);
+  color: var(--teacher-approved-text);
+}
+
+.badge-adviser_approved {
+  background: var(--adviser-approved-bg);
+  color: var(--adviser-approved-text);
+}
+
+.badge-techhead_approved {
+  background: var(--techhead-approved-bg);
+  color: var(--techhead-approved-text);
+}
+
+.badge-fully_approved {
   background: var(--approved-bg);
   color: var(--approved-text);
 }

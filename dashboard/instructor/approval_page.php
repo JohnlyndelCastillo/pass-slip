@@ -1,10 +1,24 @@
 <?php
-$allowedRoles = ['instructor'];
-require_once __DIR__ . '/../../middleware/auth_guard.php';
-require_once __DIR__ . '/../../components/table_actions.php';
-require_once __DIR__ . '/../../includes/db.php';
+$role        = 'instructor';
+$allowedRoles = [$role];
+$requiredStatus = 'pending';
 
-$stmt = $conn->prepare("SELECT ps.*, u.fullname FROM pass_slips ps JOIN users u ON ps.user_id = u.id WHERE ps.approval_status = 'pending'");
+require_once __DIR__ . '/../../middleware/auth_guard.php';
+require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../components/table_actions.php';
+
+$stmt = $conn->prepare("
+  SELECT ps.*, 
+    u.fullname AS student_name,
+    a.fullname AS adviser_name,
+    t.fullname AS techhead_name
+  FROM pass_slips ps
+  JOIN users u ON ps.user_id = u.id
+  LEFT JOIN users a ON ps.class_adviser = a.id
+  LEFT JOIN users t ON ps.technology_head = t.id
+  WHERE ps.approval_status = ?
+");
+$stmt->bind_param("s", $requiredStatus);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -18,10 +32,6 @@ $result = $stmt->get_result();
   <title>Approval Page</title>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/public/css/common.css?v=1.0">
-  <link rel="stylesheet" href="/public/css/instructor/instructor_approval_page_style.css?v=1.0">
-  <link rel="stylesheet" href="/public/css/form/form_common_style.css?v=1.0">
-  <link rel="stylesheet" href="/public/css/modal/modal_component_style.css?v=1.0">
-  <link rel="stylesheet" href="/public/css/approval-badge/approval_status_badge_style.css?v=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -49,8 +59,8 @@ $result = $stmt->get_result();
   <div class="side-layout">
     <aside class="side-bar">
       <a class="nav-item active" href="#">
-        <i class="fa-solid fa-hashtag"></i>
-        Dashboard
+        <i class="fa-solid fa-list-check"></i>
+        Approvals
       </a>
     </aside>
 
@@ -60,6 +70,11 @@ $result = $stmt->get_result();
       <?php if (!empty($_SESSION['approvalError'])): ?>
         <p class="form-error"><?= htmlspecialchars($_SESSION['approvalError']) ?></p>
         <?php unset($_SESSION['approvalError']); ?>
+      <?php endif; ?>
+
+      <?php if (!empty($_SESSION['approvalSuccess'])): ?>
+        <p class="form-success"><?= htmlspecialchars($_SESSION['approvalSuccess']) ?></p>
+        <?php unset($_SESSION['approvalSuccess']); ?>
       <?php endif; ?>
 
       <div class="page-header">
@@ -74,6 +89,7 @@ $result = $stmt->get_result();
               <th>Title</th>
               <th>Request Date</th>
               <th>Requester</th>
+              <th>Section</th>
               <th>Actions</th>
               <th></th>
             </tr>
@@ -87,18 +103,19 @@ $result = $stmt->get_result();
                       data-category="<?= ucfirst(htmlspecialchars($row['category'])) ?>"
                       data-student="<?= htmlspecialchars($row['requesting_student']) ?>"
                       data-section="<?= htmlspecialchars($row['section'] ?? '—') ?>"
-                      data-date="<?= $row['request_date'] ?>"
+                      data-date="<?= date('M d, Y', strtotime($row['request_date'])) ?>"
                       data-time="<?= date('h:i A', strtotime($row['request_time'])) ?>"
                       data-purpose="<?= htmlspecialchars($row['purpose']) ?>"
-                      data-adviser="<?= htmlspecialchars($row['class_adviser'] ?? '—') ?>"
-                      data-techhead="<?= htmlspecialchars($row['technology_head'] ?? '—') ?>"
+                      data-adviser="<?= htmlspecialchars($row['adviser_name'] ?? '—') ?>"
+                      data-techhead="<?= htmlspecialchars($row['techhead_name'] ?? '—') ?>"
                       data-note="<?= htmlspecialchars($row['note'] ?? '—') ?>"
                       data-status="<?= $row['approval_status'] ?>"
                       data-created="<?= date('M d, Y', strtotime($row['created_at'])) ?>">
                       <?= htmlspecialchars($row['purpose']) ?>
                     </a>
                   </td>
-                  <td><?= date('Y-m-d', strtotime($row['request_date'])) ?></td>
+                  <td><?= date('M d, Y', strtotime($row['request_date'])) ?></td>
+                  <td><?= htmlspecialchars($row['student_name']) ?></td>
                   <td><?= htmlspecialchars($row['section'] ?? '—') ?></td>
                   <td>
                     <div class="row-actions">
@@ -125,7 +142,7 @@ $result = $stmt->get_result();
               <?php endwhile; ?>
             <?php else: ?>
               <tr>
-                <td colspan="5" style="text-align:center; color:#6b7280; padding: 24px;">
+                <td colspan="6" style="text-align:center; color:#6b7280; padding: 24px;">
                   No pending requests found.
                 </td>
               </tr>
@@ -143,5 +160,4 @@ $result = $stmt->get_result();
   <script src="/public/js/modal_file_slip.js"></script>
 
 </body>
-
 </html>

@@ -1,3 +1,10 @@
+/* common.css */
+@import url('/public/css/approval-badge/approval_status_badge_style.css');
+@import url('/public/css/approval-badge/admin_role_badge_style.css');
+@import url('/public/css/approval-button/approval_button_style.css');
+@import url('/public/css/modal/modal_component_style.css');
+@import url('/public/css/form/form_common_style.css');
+
 * {
   margin: 0;
   padding: 0;
@@ -15,11 +22,13 @@ body {
 /* Top Bar */
 .top-bar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 72px;
   background: #ffffff;
   border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15); 
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
   padding: 0 24px;
@@ -42,8 +51,8 @@ body {
   opacity: 50%;
 }
 
-.top-bar-spacer { 
-  flex: 1; 
+.top-bar-spacer {
+  flex: 1;
 }
 
 .top-bar-actions {
@@ -62,20 +71,24 @@ body {
   font-size: 20px;
   opacity: 100%;
 }
-.top-bar-bell ,
+
+.top-bar-bell,
 .top-bar-avatar {
   position: relative;
   cursor: pointer;
-  width: 40px; height: 40px;
-  display: flex; align-items: center; justify-content: center;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
 }
 
 .top-bar-avatar {
   border: 0.5px;
   color: #ffffff;
-  background-color:#007E6E;
-   position: relative;
+  background-color: #007E6E;
+  position: relative;
 }
 
 .profile-dropdown {
@@ -113,7 +126,10 @@ body {
   background: #f3f4f6;
 }
 
-.profile-dropdown form { margin: 0; }
+.profile-dropdown form {
+  margin: 0;
+}
+
 .profile-dropdown-logout {
   width: 100%;
   background: none;
@@ -137,7 +153,7 @@ body {
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  min-height: 100%; 
+  min-height: 100%;
 }
 
 .nav-item {
@@ -153,7 +169,7 @@ body {
 
 .nav-item i {
   color: #fff;
-  font-size: 18px ;
+  font-size: 18px;
 }
 
 .nav-item:hover {
@@ -299,7 +315,10 @@ body {
 }
 
 /* Reset button styles to match links */
-.dropdown form { margin: 0; }
+.dropdown form {
+  margin: 0;
+}
+
 .dropdown-delete {
   width: 100%;
   background: none;
@@ -341,4 +360,3 @@ body {
   font-size: 16px;
   color: #333;
 }
-
