@@ -58,6 +58,11 @@ function closeDetailsModal() {
   document.getElementById('slipDetailsModal').classList.remove('open');
 }
 
+// Close when clicking outside
+document.getElementById('slipDetailsModal').addEventListener('click', function (e) {
+  if (e.target === this) closeDetailsModal();
+});
+
 function toggleNotifications(event) {
   event.stopPropagation();
   const dropdown = document.getElementById('notificationDropdown');
@@ -72,7 +77,28 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Close when clicking outside
-document.getElementById('slipDetailsModal').addEventListener('click', function (e) {
-  if (e.target === this) closeDetailsModal();
-});
+function markNotificationRead(el) {
+  const id = el.dataset.id;
+
+  if (!el.classList.contains('unread')) return; // already read
+
+  fetch('/auth/notifications/mark_notifications_read.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `id=${id}`
+  }).then(() => {
+    // Remove unread styling
+    el.classList.remove('unread');
+
+    // Update badge count
+    const badge = document.querySelector('.notification-badge');
+    if (badge) {
+      const count = parseInt(badge.textContent) - 1;
+      if (count <= 0) {
+        badge.remove();
+      } else {
+        badge.textContent = count;
+      }
+    }
+  });
+}
