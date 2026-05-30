@@ -34,14 +34,14 @@ $result = $stmt->get_result();
     </div>
     <div class="top-bar-spacer"></div>
     <div class="top-bar-actions">
-      <div class="top-bar-bell" title="Notifications" onclick="toggleNotifications(event)">
+      <div class="top-bar-bell" title="Notifications">
         <i class="fa-solid fa-bell"></i>
         <?php if ($unreadCount > 0): ?>
           <span class="notification-badge"><?= $unreadCount ?></span>
         <?php endif; ?>
         <?php include __DIR__ . '/../../components/notifications_dropdown.php'; ?>
       </div>
-      <div class="top-bar-avatar" title="Profile" onclick="toggleProfileMenu(event)">
+      <div class="top-bar-avatar" title="Profile">
         <i class="fa-solid fa-user"></i>
         <?php include __DIR__ . '/../../components/profile_actions.php'; ?>
       </div>

@@ -8,10 +8,12 @@ function closeModal() {
   document.querySelector('#createSlipModal form').reset();
 }
 
-// Close when clicking outside the modal box
-document.getElementById('createSlipModal').addEventListener('click', function (e) {
-  if (e.target === this) closeModal();
-});
+const createSlipModal = document.getElementById('createSlipModal');
+if (createSlipModal) {
+  createSlipModal.addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+}
 
 // Open profile dropdown
 function toggleProfileMenu(event) {
@@ -20,29 +22,20 @@ function toggleProfileMenu(event) {
   if (dropdown) dropdown.classList.toggle('open');
 }
 
-// Close when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.top-bar-avatar')) {
-    const dropdown = document.getElementById('profileDropdown');
-    if (dropdown) dropdown.classList.remove('open');
-  }
-});
-
 // Opening slip details modal
 function openDetailsModal(el) {
   const d = el.dataset;
 
   document.getElementById('detail-category').textContent = d.category;
-  document.getElementById('detail-student').textContent = d.student;
-  document.getElementById('detail-section').textContent = d.section;
-  document.getElementById('detail-date').textContent = d.date;
-  document.getElementById('detail-time').textContent = d.time;
-  document.getElementById('detail-purpose').textContent = d.purpose;
-  document.getElementById('detail-adviser').textContent = d.adviser;
+  document.getElementById('detail-student').textContent  = d.student;
+  document.getElementById('detail-section').textContent  = d.section;
+  document.getElementById('detail-date').textContent     = d.date;
+  document.getElementById('detail-time').textContent     = d.time;
+  document.getElementById('detail-purpose').textContent  = d.purpose;
+  document.getElementById('detail-adviser').textContent  = d.adviser;
   document.getElementById('detail-techhead').textContent = d.techhead;
-  document.getElementById('detail-note').textContent = d.note;
-  document.getElementById('detail-status').textContent = d.status;
-  document.getElementById('detail-created').textContent = d.created;
+  document.getElementById('detail-note').textContent     = d.note;
+  document.getElementById('detail-created').textContent  = d.created;
 
   const statusEl = document.getElementById('detail-status');
   statusEl.textContent = d.status
@@ -58,39 +51,61 @@ function closeDetailsModal() {
   document.getElementById('slipDetailsModal').classList.remove('open');
 }
 
-// Close when clicking outside
-document.getElementById('slipDetailsModal').addEventListener('click', function (e) {
-  if (e.target === this) closeDetailsModal();
+const slipDetailsModal = document.getElementById('slipDetailsModal');
+if (slipDetailsModal) {
+  slipDetailsModal.addEventListener('click', function(e) {
+    if (e.target === this) closeDetailsModal();
+  });
+}
+
+// Notification dropdown
+const bellBtn = document.querySelector('.top-bar-bell');
+const notifDropdown = document.getElementById('notificationDropdown');
+
+if (bellBtn && notifDropdown) {
+  bellBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    notifDropdown.classList.toggle('open');
+    const profileDropdown = document.getElementById('profileDropdown');
+    if (profileDropdown) profileDropdown.classList.remove('open');
+  });
+}
+
+// Profile dropdown
+const avatarBtn = document.querySelector('.top-bar-avatar');
+const profileDropdown = document.getElementById('profileDropdown');
+
+if (avatarBtn && profileDropdown) {
+  avatarBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    profileDropdown.classList.toggle('open');
+    if (notifDropdown) notifDropdown.classList.remove('open');
+  });
+}
+
+// Close both when clicking outside
+document.addEventListener('click', function() {
+  if (notifDropdown) notifDropdown.classList.remove('open');
+  if (profileDropdown) profileDropdown.classList.remove('open');
 });
 
+// Notification dropdown
 function toggleNotifications(event) {
   event.stopPropagation();
   const dropdown = document.getElementById('notificationDropdown');
   if (dropdown) dropdown.classList.toggle('open');
 }
 
-// Close when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.top-bar-bell')) {
-    const dropdown = document.getElementById('notificationDropdown');
-    if (dropdown) dropdown.classList.remove('open');
-  }
-});
-
 function markNotificationRead(el) {
   const id = el.dataset.id;
-
-  if (!el.classList.contains('unread')) return; // already read
+  if (!el.classList.contains('unread')) return;
 
   fetch('/auth/notifications/mark_notifications_read.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `id=${id}`
   }).then(() => {
-    // Remove unread styling
     el.classList.remove('unread');
-
-    // Update badge count
     const badge = document.querySelector('.notification-badge');
     if (badge) {
       const count = parseInt(badge.textContent) - 1;
