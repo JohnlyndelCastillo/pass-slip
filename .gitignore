@@ -4,3 +4,5 @@ database/*.sql
 !database/init.sql
 # Environment variables
 .env
+# Aider files
+.aider*
