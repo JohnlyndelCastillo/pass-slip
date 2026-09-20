@@ -6,9 +6,31 @@ on:
   pull_request:
     branches: [main, develop]
 
+# Cancel an older run of the same branch when a new commit is pushed
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  # Fast feedback: runs on the runner itself, no Docker needed
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # match the PHP version used in your Dockerfile
+
+      - name: PHP syntax check
+        run: find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     env:
       MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
@@ -21,70 +43,50 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Create .env from example
+        run: cp .env.example .env
 
       - name: Build and start Docker containers
-        run: |
-          docker compose up -d
+        # --wait blocks until the db healthcheck passes (defined in docker-compose.yml)
+        run: docker compose up -d --build --wait
 
-      - name: Wait for MySQL to be ready
+      - name: Verify database schema
         run: |
-          echo "Waiting for MySQL to be ready..."
-          for i in {1..30}; do
-            if docker exec pass-slip-mysql mysqladmin ping -uroot -pgroup2-123 --silent 2>/dev/null; then
-              echo "MySQL is ready!"
-              sleep 5  # Give it a few more seconds to fully initialize
-              break
-            fi
-            echo "Waiting for MySQL... ($i/30)"
-            sleep 2
+          tables=$(docker exec -e MYSQL_PWD="$MYSQL_ROOT_PASSWORD" pass-slip-mysql \
+            mysql -uroot -N -B pass_slip_system -e "SHOW TABLES;")
+          echo "$tables"
+          for t in users pass_slips; do
+            echo "$tables" | grep -qx "$t" || { echo "Missing table: $t"; exit 1; }
           done
 
-          # Show MySQL logs for debugging
-          echo "=== MySQL Container Logs ==="
-          docker logs pass-slip-mysql --tail 50
-
-      - name: Check if containers are running
+      - name: Wait for web server
         run: |
-          docker ps
-          docker compose ps
+          curl -fsS -o /dev/null \
+            --retry 15 --retry-delay 2 --retry-connrefused \
+            http://localhost:8080/dashboard/login.php
 
-      - name: Test database connection
+      - name: Protected pages reject guests
         run: |
-          docker exec pass-slip-mysql mysql -uroot -pgroup2-123 -e "SHOW DATABASES;"
-          docker exec pass-slip-mysql mysql -uroot -pgroup2-123 pass_slip_system -e "SHOW TABLES;"
+          # Adjust the path if your dashboard URL differs. Any status other than 200
+          # (redirect to login, 401, 403) means the auth guard is doing its job.
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/dashboard/admin/dashboard.php)
+          echo "HTTP $code"
+          [ "$code" != "200" ] || { echo "Admin dashboard is reachable without logging in"; exit 1; }
 
-      - name: PHP Syntax Check
+      - name: Sensitive files are not served
         run: |
-          # Check all PHP files for syntax errors
-          echo "Checking PHP syntax..."
-          ERROR_COUNT=0
-          while IFS= read -r file; do
-            if ! docker exec pass-slip-web php -l "$file" > /dev/null 2>&1; then
-              echo "❌ Syntax error in: $file"
-              docker exec pass-slip-web php -l "$file"
-              ERROR_COUNT=$((ERROR_COUNT + 1))
+          status=0
+          for path in .env database/init.sql docker-compose.yml .aider.chat.history.md; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/$path")
+            echo "/$path -> HTTP $code"
+            if [ "$code" = "200" ]; then
+              echo "Publicly readable: /$path"
+              status=1
             fi
-          done < <(docker exec pass-slip-web find /var/www/html -name "*.php")
-
-          if [ $ERROR_COUNT -eq 0 ]; then
-            echo "✅ All PHP files passed syntax check"
-          else
-            echo "❌ Found $ERROR_COUNT file(s) with syntax errors"
-            exit 1
-          fi
-
-      - name: Test web server is responding
-        run: |
-          curl -f http://localhost:8080 || exit 1
-
-      - name: Run basic health checks
-        run: |
-          # Check if Apache is running
-          docker exec pass-slip-web service apache2 status
-
-          # Check if MySQL is accessible
-          docker exec pass-slip-mysql mysqladmin ping -uroot -pgroup2-123
+          done
+          exit $status
 
       - name: View logs on failure
         if: failure()
