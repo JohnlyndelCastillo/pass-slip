@@ -1,9 +1,12 @@
 <?php
+require_once __DIR__ . '/../../middleware/file_guard.php';
+
+require_once __DIR__ . '/../../includes/config.php';
+
 $role        = 'csd_council';
 $allowedRoles = [$role];
 $requiredStatus = 'techhead_approved';
 
-require_once __DIR__ . '/../../middleware/auth_guard.php';
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../components/table_actions.php';
 require_once __DIR__ . '/../../includes/notifications.php';

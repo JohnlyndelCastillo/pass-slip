@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/../../middleware/file_guard.php';
+
 $allowedRoles = ['student'];
-require_once __DIR__ . '/../../middleware/auth_guard.php';
 require_once __DIR__ . '/../../components/table_actions.php';
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/notifications.php';

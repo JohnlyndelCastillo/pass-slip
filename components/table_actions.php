@@ -6,7 +6,7 @@ function rowDropdown($editUrl = '#', $deleteId = null)
       <i class="fa-regular fa-pen-to-square"></i> Edit
     </a>
     <?php if ($deleteId): ?>
-      <form action="/auth/delete_slip.php" method="POST"
+      <form action="<?= url('/slips/delete') ?>" method="POST"
         onsubmit="return confirm('Are you sure you want to delete this slip?')">
         <input type="hidden" name="id" value="<?= $deleteId ?>">
         <button type="submit" class="dropdown-delete">

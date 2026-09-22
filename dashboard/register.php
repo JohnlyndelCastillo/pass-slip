@@ -1,5 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/config.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $error   = $_SESSION['registerError'] ?? '';
 $success = $_SESSION['registerSuccess'] ?? '';
 unset($_SESSION['registerError'], $_SESSION['registerSuccess']);
@@ -14,16 +18,16 @@ unset($_SESSION['registerError'], $_SESSION['registerSuccess']);
   <title>Register</title>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/public/css/register_style.css?v=1.0">
-  <link rel=" stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="/public/js/register_back_button.js"></script>
 </head>
-<script src="../public/js/register_back_button.js"></script>
 
 <body>
   <div id="register-container">
     <div class="register-form">
       <div class="register-header">
-        <i class="fa-solid fa-circle-arrow-left back-btn" onclick="redirectToLogin()"></i>
+        <i class="fa-solid fa-circle-arrow-left back-btn" onclick="redirectToLogin()" data-login-url="<?= url('/login') ?>"></i>
         <h2>Register</h2>
         <div class="header-spacer"></div>
       </div>
@@ -36,10 +40,9 @@ unset($_SESSION['registerError'], $_SESSION['registerSuccess']);
         <p class="form-success"><?= htmlspecialchars($success) ?></p>
       <?php endif; ?>
 
-      <form action="/auth/register_auth.php" method="POST">
+      <form action="<?= url('/auth/register') ?>" method="POST">
         <input type="hidden" name="action" value="register">
 
-        <!-- Currently the handling of validation errors is server-side and handled by register_auth.php. -->
         <label for="fullname"></label>
         <input type="text" id="fullname" name="fullname" placeholder="Enter full name">
 
@@ -59,7 +62,7 @@ unset($_SESSION['registerError'], $_SESSION['registerSuccess']);
       </form>
     </div>
   </div>
-  <script src="../public/js/show_password.js"></script>
+  <script src="/public/js/show_password.js"></script>
 </body>
 
 </html>

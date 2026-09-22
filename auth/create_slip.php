@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../middleware/auth_guard.php';
+require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/notifications.php';
 
@@ -45,16 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->close();
     $conn->close();
-    header("Location: /dashboard/student/request_page.php");
+    header("Location: " . url('/dashboard/student'));
     exit;
   } else {
     // Store error and redirect back
     $_SESSION['slipError'] = "Failed to create pass slip. Please try again.";
-    header("Location: /dashboard/student/request_page.php");
+    header("Location: " . url('/dashboard/student'));
     exit;
   }
 }
 
 // Block direct access
-header("Location: /dashboard/student/request_page.php");
+header("Location: " . url('/dashboard/student'));
 exit;

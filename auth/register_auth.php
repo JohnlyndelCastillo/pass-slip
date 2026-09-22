@@ -1,5 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/config.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../includes/db.php';
 
 $action = $_POST['action'] ?? '';
@@ -14,13 +18,13 @@ if ($action === 'register') {
   // Basic validation
   if (empty($fullname) || empty($username) || empty($password)) {
     $_SESSION['registerError'] = "All fields are required.";
-    header("Location: /dashboard/register.php");
+    header("Location: " . url('/register'));
     exit;
   }
 
   if (strlen($password) < 8) {
     $_SESSION['registerError'] = "Password must be at least 8 characters.";
-    header("Location: /dashboard/register.php");
+    header("Location: " . url('/register'));
     exit;
   }
 
@@ -33,7 +37,7 @@ if ($action === 'register') {
   if ($stmt->num_rows > 0) {
     $_SESSION['registerError'] = "Username already taken.";
     $stmt->close();
-    header("Location: /dashboard/register.php");
+    header("Location: " . url('/register'));
     exit;
   }
   $stmt->close();
@@ -47,15 +51,15 @@ if ($action === 'register') {
 
   if ($stmt->execute()) {
     $_SESSION['registerSuccess'] = "";
-    header("Location: /dashboard/login.php");
+    header("Location: " . url('/login'));
   } else {
     $_SESSION['registerError'] = "Something went wrong. Please try again.";
-    header("Location: /dashboard/register.php");
+    header("Location: " . url('/register'));
   }
   $stmt->close();
   exit;
 }
 
-// If someone visits auth.php directly
-header("Location: ../index.php");
+// If someone visits register_auth.php directly without POSTing
+header("Location: " . url('/register'));
 exit;

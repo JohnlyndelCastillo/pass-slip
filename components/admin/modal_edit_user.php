@@ -8,7 +8,7 @@
     </div>
     <div class="modal-divider"></div>
     <div class="modal-body">
-      <form action="/auth/admin/edit_user.php" method="POST">
+      <form action="<?= url('/admin/users/edit') ?>" method="POST">
         <input type="hidden" name="id" id="edit-user-id">
         <div class="form-group" style="margin-bottom: 16px;">
           <label class="form-label">Full Name</label>

@@ -14,7 +14,7 @@
 
     <!-- Modal Body -->
     <div class="modal-body">
-      <form action="/auth/create_slip.php" method="POST">
+      <form action="<?= url('/slips') ?>" method="POST">
 
         <!-- Category -->
         <div class="form-group">

@@ -1,8 +1,14 @@
 <?php
-$allowedRoles = ['instructor', 'adviser', 'technology_head', 'csd_council'];
-require_once __DIR__ . '/../middleware/auth_guard.php';
+require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/notifications.php';
+
+$dashboardRoute = [
+  'instructor'      => '/dashboard/instructor',
+  'adviser'         => '/dashboard/adviser',
+  'technology_head' => '/dashboard/technology-head',
+  'csd_council'     => '/dashboard/csd-council',
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $id          = $_POST['id'];
@@ -27,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->close();
     $conn->close();
-    header("Location: /dashboard/{$role}/approval_page.php");
+    header("Location: " . url($dashboardRoute[$role]));
     exit;
   } else {
     $_SESSION['approvalError'] = "Failed to reject slip.";
-    header("Location: /dashboard/{$role}/approval_page.php");
+    header("Location: " . url($dashboardRoute[$role]));
     exit;
   }
 }
 
-header("Location: /dashboard/login.php");
+header("Location: " . url('/login'));
 exit;

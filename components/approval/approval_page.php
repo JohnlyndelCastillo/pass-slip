@@ -99,13 +99,13 @@
                   <td><?= htmlspecialchars($row['section'] ?? '—') ?></td>
                   <td>
                     <div class="row-actions">
-                      <form action="/auth/approve_slip.php" method="POST">
+                      <form action="<?= url('/slips/approve') ?>" method="POST">
                         <input type="hidden" name="id" value="<?= $row['id'] ?>">
                         <button type="submit" class="btn-approve">
                           <i class="fa-solid fa-check"></i> Approve
                         </button>
                       </form>
-                      <form action="/auth/reject_slip.php" method="POST">
+                      <form action="<?= url('/slips/reject') ?>" method="POST">
                         <input type="hidden" name="id" value="<?= $row['id'] ?>">
                         <button type="submit" class="btn-reject"
                           onclick="return confirm('Are you sure you want to reject this slip?')">
