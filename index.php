@@ -8,6 +8,8 @@
  * hands off to the matching page.
  */
 
+define('APP_ENTRY', true);
+
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/middleware/auth_guard.php';

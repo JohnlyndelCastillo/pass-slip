@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../middleware/file_guard.php';
 require_once __DIR__ . '/../../includes/config.php';
 
 $role        = 'technology_head';
