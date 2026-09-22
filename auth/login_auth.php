@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 
 // ─── LOGIN ───────────────────────────────────────────────
@@ -9,7 +10,7 @@ $password = $_POST['password'] ?? '';
 
 if (empty($username) || empty($password)) {
   $_SESSION['loginError'] = "All fields are required.";
-  header("Location: /dashboard/login.php");
+  header("Location: " . url('/login'));
   exit;
 }
 
@@ -27,30 +28,30 @@ if ($result->num_rows === 1) {
     $_SESSION['role'] = $user['role'];
     switch ($user['role']) {
       case 'student':
-        header("Location: /dashboard/student/request_page.php");
+        header("Location: " . url('/dashboard/student'));
         break;
       case 'instructor':
-        header("Location: /dashboard/instructor/approval_page.php");
+        header("Location: " . url('/dashboard/instructor'));
         break;
       case 'adviser':
-        header("Location: /dashboard/adviser/approval_page.php");
+        header("Location: " . url('/dashboard/adviser'));
         break;
       case 'technology_head':
-        header("Location: /dashboard/technology_head/approval_page.php");
+        header("Location: " . url('/dashboard/technology-head'));
         break;
       case 'csd_council':
-        header("Location: /dashboard/csd_council/approval_page.php");
+        header("Location: " . url('/dashboard/csd-council'));
         break;
       case 'admin':
-        header("Location: /dashboard/admin/dashboard.php");
+        header("Location: " . url('/dashboard/admin'));
         break;
       default:
-        header("Location: /dashboard/login.php");
+        header("Location: " . url('/login'));
     }
     exit;
   }
 }
 
 $_SESSION['loginError'] = "Invalid username or password.";
-header("Location: /dashboard/login.php");
+header("Location: " . url('/login'));
 exit;

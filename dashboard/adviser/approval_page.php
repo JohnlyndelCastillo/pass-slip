@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../../includes/config.php';
+
 $role        = 'adviser';
 $allowedRoles = [$role];
 $requiredStatus = 'teacher_approved';
 
-require_once __DIR__ . '/../../middleware/auth_guard.php';
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../components/table_actions.php';
 require_once __DIR__ . '/../../includes/notifications.php';

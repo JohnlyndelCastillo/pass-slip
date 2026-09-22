@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../includes/config.php';
+
 $unreadCount   = getUnreadCount($conn, $_SESSION['user_id']);
 $notifications = getNotifications($conn, $_SESSION['user_id']);
 ?>
@@ -7,7 +9,7 @@ $notifications = getNotifications($conn, $_SESSION['user_id']);
   <div class="notification-header">
     <span>Notifications</span>
     <?php if ($unreadCount > 0): ?>
-      <form action="/auth/notifications/mark_notifications_read.php" method="POST" style="margin:0">
+      <form action="<?= url('/notifications/read') ?>" method="POST" style="margin:0">
         <button type="submit" class="mark-read-btn">Mark all as read</button>
       </form>
     <?php endif; ?>

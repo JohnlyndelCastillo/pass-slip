@@ -8,7 +8,7 @@
     </div>
     <div class="modal-divider"></div>
     <div class="modal-body">
-      <form action="/auth/admin/create_user.php" method="POST">
+      <form action="<?= url('/admin/users') ?>" method="POST">
         <div class="form-group" style="margin-bottom: 16px;">
           <label class="form-label">Full Name</label>
           <input type="text" name="fullname" class="form-input" placeholder="Enter full name" required>

@@ -1,6 +1,5 @@
 <?php
-$allowedRoles = ['admin'];
-require_once __DIR__ . '/../../middleware/auth_guard.php';
+require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/notifications.php';
 
@@ -52,7 +51,7 @@ $result = $stmt->get_result();
   <!-- Side Layout -->
   <div class="side-layout">
     <aside class="side-bar">
-      <a class="nav-item active" href="/dashboard/admin/dashboard.php">
+      <a class="nav-item active" href="<?= url('/dashboard/admin') ?>">
         <i class="fa-solid fa-users"></i>
         Manage Users
       </a>
@@ -108,7 +107,7 @@ $result = $stmt->get_result();
                       <a href="#" onclick="openEditUserModal(<?= $row['id'] ?>, '<?= htmlspecialchars($row['fullname']) ?>', '<?= htmlspecialchars($row['username']) ?>', '<?= $row['role'] ?>')">
                         <i class="fa-regular fa-pen-to-square"></i> Edit
                       </a>
-                      <form action="/auth/admin/delete_user.php" method="POST"
+                      <form action="<?= url('/admin/users/delete') ?>" method="POST"
                         onsubmit="return confirm('Are you sure you want to delete this user?')">
                         <input type="hidden" name="id" value="<?= $row['id'] ?>">
                         <button type="submit" class="dropdown-delete">

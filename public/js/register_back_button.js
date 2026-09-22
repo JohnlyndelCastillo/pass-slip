@@ -1,3 +1,4 @@
 function redirectToLogin() {
-  window.location.href = "/dashboard/login.php";
+  const btn = document.querySelector('[data-login-url]');
+  window.location.href = btn.dataset.loginUrl;
 }

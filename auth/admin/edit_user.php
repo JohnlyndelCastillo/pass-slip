@@ -1,6 +1,6 @@
 <?php
 $allowedRoles = ['admin'];
-require_once __DIR__ . '/../../middleware/auth_guard.php';
+require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $stmt->close();
   $conn->close();
-  header("Location: /../../dashboard/admin/dashboard.php");
+  header("Location: " . url('/dashboard/admin'));
   exit;
 }
 
-header("Location: /../../dashboard/admin/dashboard.php");
+header("Location: " . url('/dashboard/admin'));
 exit;
