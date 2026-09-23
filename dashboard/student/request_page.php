@@ -32,6 +32,9 @@ $stmt = $conn->prepare("
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
+
+$autoOpenCreate = ($path === '/dashboard/student/create');
+
 ?>
 
 <!DOCTYPE html>

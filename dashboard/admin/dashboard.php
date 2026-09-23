@@ -11,6 +11,12 @@ $unreadCount = getUnreadCount($conn, $_SESSION['user_id']);
 $stmt = $conn->prepare("SELECT id, fullname, username, role, created_at FROM users WHERE role != 'admin'");
 $stmt->execute();
 $result = $stmt->get_result();
+
+$autoOpenCreate = ($path === '/dashboard/admin/create');
+$editUserId = ($path === '/dashboard/admin/edit' && isset($_GET['id']))
+  ? (int) $_GET['id']
+  : null;
+  
 ?>
 
 <!DOCTYPE html>

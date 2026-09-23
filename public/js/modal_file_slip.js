@@ -1,11 +1,18 @@
+const modalEl = document.getElementById('createSlipModal');
+const CREATE_SLIP_URL = modalEl?.dataset.createUrl;
+const DASHBOARD_URL = modalEl?.dataset.dashboardUrl;
+const NOTIFICATIONS_READ_URL = modalEl?.dataset.notificationsReadUrl;
+
 // Opening file slip modal
 function openModal() {
   document.getElementById('createSlipModal').classList.add('open');
+  history.pushState({ modal: 'create' }, '', CREATE_SLIP_URL);
 }
 
 function closeModal() {
   document.getElementById('createSlipModal').classList.remove('open');
   document.querySelector('#createSlipModal form').reset();
+  history.pushState({ modal: null }, '', DASHBOARD_URL);
 }
 
 const createSlipModal = document.getElementById('createSlipModal');
@@ -14,6 +21,28 @@ if (createSlipModal) {
     if (e.target === this) closeModal();
   });
 }
+
+// Keep the modal in sync with browser back/forward
+window.addEventListener('popstate', function() {
+  const modal = document.getElementById('createSlipModal');
+  if (!modal) return;
+
+  if (window.location.pathname.endsWith('/create')) {
+    modal.classList.add('open');
+  } else {
+    modal.classList.remove('open');
+  }
+});
+
+// If the page was loaded directly on /create, JS can't rely on PHP alone
+// (e.g. if the initial "open" class is added conditionally server-side,
+// this is optional — safe to keep as a fallback either way)
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('createSlipModal');
+  if (modal && window.location.pathname.endsWith('/create')) {
+    modal.classList.add('open');
+  }
+});
 
 // Open profile dropdown
 function toggleProfileMenu(event) {
@@ -100,7 +129,7 @@ function markNotificationRead(el) {
   const id = el.dataset.id;
   if (!el.classList.contains('unread')) return;
 
-  fetch('/auth/notifications/mark_notifications_read.php', {
+  fetch(NOTIFICATIONS_READ_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `id=${id}`

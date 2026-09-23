@@ -20,7 +20,10 @@ return [
 
     // ---- Dashboards (one route per role) ----
     'GET /dashboard/admin'            => ['file' => 'dashboard/admin/dashboard.php', 'roles' => ['admin']],
+    'GET /dashboard/admin/create'     => ['file' => 'dashboard/admin/dashboard.php', 'roles' => ['admin']],
+    'GET /dashboard/admin/edit'       => ['file' => 'dashboard/admin/dashboard.php', 'roles' => ['admin']],
     'GET /dashboard/student'          => ['file' => 'dashboard/student/request_page.php', 'roles' => ['student']],
+    'GET /dashboard/student/create'   => ['file' => 'dashboard/student/request_page.php', 'roles' => ['student']],
     'GET /dashboard/adviser'          => ['file' => 'dashboard/adviser/approval_page.php', 'roles' => ['adviser']],
     'GET /dashboard/instructor'       => ['file' => 'dashboard/instructor/approval_page.php', 'roles' => ['instructor']],
     'GET /dashboard/csd-council'      => ['file' => 'dashboard/csd_council/approval_page.php', 'roles' => ['csd_council']],

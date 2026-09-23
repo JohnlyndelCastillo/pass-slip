@@ -1,4 +1,7 @@
-<div class="modal-overlay" id="editUserModal">
+<div class="modal-overlay <?= $editUserId ? 'active' : '' ?>" 
+     id="editUserModal"
+     data-edit-url="<?= url('/dashboard/admin/edit') ?>"
+     data-dashboard-url="<?= url('/dashboard/admin') ?>">
   <div class="modal">
     <div class="modal-header">
       <h2>Edit User</h2>
