@@ -1,4 +1,7 @@
-<div class="modal-overlay" id="createUserModal">
+<div class="modal-overlay <?= $autoOpenCreate ? 'active' : '' ?>" 
+      id="createUserModal"
+      data-create-url="<?= url('/dashboard/admin/create') ?>"
+      data-dashboard-url="<?= url('/dashboard/admin') ?>">
   <div class="modal">
     <div class="modal-header">
       <h2>Add New User</h2>

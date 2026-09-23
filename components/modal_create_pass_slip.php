@@ -1,5 +1,9 @@
 <!-- Modal Overlay -->
-<div class="modal-overlay" id="createSlipModal">
+<div class="modal-overlay <?= $autoOpenCreate ? 'open' : '' ?>"
+     id="createSlipModal"
+     data-create-url="<?= url('/dashboard/student/create') ?>"
+     data-dashboard-url="<?= url('/dashboard/student') ?>"
+     data-notifications-read-url="<?= url('/notifications/read') ?>">
   <div class="modal">
 
     <!-- Modal Header -->
@@ -102,4 +106,4 @@
       </form>
     </div>
   </div>
-</div>
+</div>  
