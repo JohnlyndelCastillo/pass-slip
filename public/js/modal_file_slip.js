@@ -1,8 +1,3 @@
-const modalEl = document.getElementById('createSlipModal');
-const CREATE_SLIP_URL = modalEl?.dataset.createUrl;
-const DASHBOARD_URL = modalEl?.dataset.dashboardUrl;
-const NOTIFICATIONS_READ_URL = modalEl?.dataset.notificationsReadUrl;
-
 // Opening file slip modal
 function openModal() {
   document.getElementById('createSlipModal').classList.add('open');
@@ -12,13 +7,73 @@ function openModal() {
 function closeModal() {
   document.getElementById('createSlipModal').classList.remove('open');
   document.querySelector('#createSlipModal form').reset();
+  clearSlipFormErrors();
   history.pushState({ modal: null }, '', DASHBOARD_URL);
+}
+
+function clearSlipFormErrors() {
+  const form = document.getElementById('createSlipForm');
+  if (!form) return;
+
+  form.querySelectorAll('.form-error').forEach(el => {
+    el.textContent = '';
+  });
+  form.querySelectorAll('.form-input, .form-select').forEach(el => {
+    el.classList.remove('input-error');
+  });
 }
 
 const createSlipModal = document.getElementById('createSlipModal');
 if (createSlipModal) {
   createSlipModal.addEventListener('click', function(e) {
     if (e.target === this) closeModal();
+  });
+}
+
+// Validate the create-slip form before it submits.
+// This is a UX convenience only — the real check that can't be bypassed
+// lives server-side in auth/create_slip.php, since a user can always
+// disable JS or send a raw POST request.
+const createSlipForm = document.getElementById('createSlipForm');
+if (createSlipForm) {
+  createSlipForm.addEventListener('submit', function(e) {
+    let hasError = false;
+
+    // Clear old error messages first
+    clearSlipFormErrors();
+
+    const requiredFields = createSlipForm.querySelectorAll('[required]');
+
+    requiredFields.forEach(field => {
+      const isEmpty = !field.value || field.value.trim() === '';
+      if (isEmpty) {
+        hasError = true;
+        field.classList.add('input-error');
+        const errorEl = createSlipForm.querySelector(`[data-error-for="${field.name}"]`);
+        if (errorEl) {
+          errorEl.textContent = 'This field is required.';
+        }
+      }
+    });
+
+    if (hasError) {
+      e.preventDefault();
+    }
+  });
+
+  // Clear a field's own error the moment the user fixes it,
+  // rather than waiting for the next submit attempt.
+  createSlipForm.querySelectorAll('.form-input, .form-select').forEach(field => {
+    const eventType = field.tagName === 'SELECT' ? 'change' : 'input';
+    field.addEventListener(eventType, function() {
+      if (field.value && field.value.trim() !== '') {
+        field.classList.remove('input-error');
+        const errorEl = createSlipForm.querySelector(`[data-error-for="${field.name}"]`);
+        if (errorEl) {
+          errorEl.textContent = '';
+        }
+      }
+    });
   });
 }
 

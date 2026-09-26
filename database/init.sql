@@ -50,6 +50,7 @@ CREATE TABLE `pass_slips` (
   `request_date` date NOT NULL,
   `request_time` time NOT NULL,
   `purpose` varchar(255) NOT NULL,
+  `instructor` varchar(255) DEFAULT NULL,
   `class_adviser` varchar(255) DEFAULT NULL,
   `technology_head` varchar(255) DEFAULT NULL,
   `note` text DEFAULT NULL,
