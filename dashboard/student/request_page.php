@@ -10,6 +10,10 @@ $unreadCount = getUnreadCount($conn, $_SESSION['user_id']);
 
 $sections = json_decode(file_get_contents(__DIR__ . '/../../api/data/sections.json'));
 
+$instructorStmt = $conn->prepare("SELECT id, fullname FROM users WHERE role = 'instructor'");
+$instructorStmt->execute();
+$instructors = $instructorStmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
 $adviserStmt = $conn->prepare("SELECT id, fullname FROM users WHERE role = 'adviser'");
 $adviserStmt->execute();
 $advisers = $adviserStmt->get_result()->fetch_all(MYSQLI_ASSOC);

@@ -18,7 +18,7 @@
 
     <!-- Modal Body -->
     <div class="modal-body">
-      <form action="<?= url('/slips') ?>" method="POST">
+      <form action="<?= url('/slips') ?>" method="POST" id="createSlipForm" novalidate>
 
         <!-- Category -->
         <div class="form-group">
@@ -39,16 +39,18 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Requesting Student</label>
-            <input type="text" name="requesting_student" class="form-input" placeholder="Enter Full Name">
+            <input type="text" name="requesting_student" class="form-input" placeholder="Enter Full Name" required>
+            <span class="form-error" data-error-for="requesting_student"></span>
           </div>
           <div class="form-group">
             <label class="form-label">Section</label>
-            <select name="section" class="form-select">
+            <select name="section" class="form-select" required>
               <option value="" disabled selected>Enter Section</option>
               <?php foreach ($sections as $section): ?>
                 <option value="<?= $section ?>"><?= $section ?></option>
               <?php endforeach; ?>
             </select>
+            <span class="form-error" data-error-for="section"></span>
           </div>
         </div>
 
@@ -56,38 +58,55 @@
         <div class="form-row">
           <div class="form-group form-group-sm">
             <label class="form-label">Request Date</label>
-            <input type="date" name="request_date" class="form-input">
+            <input type="date" name="request_date" class="form-input" required>
+            <span class="form-error" data-error-for="request_date"></span>
           </div>
           <div class="form-group form-group-sm-1"><!-- For spacing between date and time inputs -->
             <label class="form-label">Time</label>
-            <input type="time" name="request_time" class="form-input">
+            <input type="time" name="request_time" class="form-input" required>
+            <span class="form-error" data-error-for="request_time"></span>
           </div>
           <div class="form-group">
             <label class="form-label">Purpose</label>
-            <input type="text" name="purpose" class="form-input" placeholder="Enter Purpose">
+            <input type="text" name="purpose" class="form-input" placeholder="Enter Purpose" required>
+            <span class="form-error" data-error-for="purpose"></span>
           </div>
         </div>
 
-        <!-- Class Adviser & Technology Head -->
+        <!-- Instructor, Class Adviser & Technology Head -->
         <div class="form-row">
           <div class="form-group">
+            <label class="form-label">Instructor</label>
+            <select name="instructor" class="form-select" required>
+              <option value="" disabled selected>Select Instructor</option>
+              <?php foreach ($instructors as $instructorRow): ?>
+                <option value="<?= $instructorRow['id'] ?>"><?= htmlspecialchars($instructorRow['fullname']) ?></option>
+              <?php endforeach; ?>
+            </select>
+            <span class="form-error" data-error-for="instructor"></span>
+          </div>
+          <div class="form-group">
             <label class="form-label">Class Adviser</label>
-            <select name="class_adviser" class="form-select">
+            <select name="class_adviser" class="form-select" required>
               <option value="" disabled selected>Select Class Adviser</option>
               <?php foreach ($advisers as $adviserRow): ?>
                 <option value="<?= $adviserRow['id'] ?>"><?= htmlspecialchars($adviserRow['fullname']) ?></option>
               <?php endforeach; ?>
-
             </select>
+            <span class="form-error" data-error-for="class_adviser"></span>
           </div>
+        </div>
+
+        <div class="form-row">
           <div class="form-group">
             <label class="form-label">Technology Head</label>
-            <select name="technology_head" class="form-select">
+            <select name="technology_head" class="form-select" required>
               <option value="" disabled selected>Select Technology Head</option>
               <?php foreach ($techHeads as $headRow): ?>
                 <option value="<?= $headRow['id'] ?>"><?= htmlspecialchars($headRow['fullname']) ?></option>
               <?php endforeach; ?>
             </select>
+            <span class="form-error" data-error-for="technology_head"></span>
           </div>
         </div>
 
@@ -106,4 +125,4 @@
       </form>
     </div>
   </div>
-</div>  
+</div>
