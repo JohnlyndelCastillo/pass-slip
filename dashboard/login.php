@@ -31,7 +31,7 @@ unset($_SESSION['loginError']);
         <p class="form-error"><?= htmlspecialchars($error) ?></p>
       <?php endif; ?>
 
-      <form action="/auth/login_auth.php" method="POST">
+      <form action="<?= url('/auth/login') ?>" method="POST">
 
         <!-- Currently the handling of validation errors is server-side and handled by login_auth.php. -->
         <label for="username"></label>

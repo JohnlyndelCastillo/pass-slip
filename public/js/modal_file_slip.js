@@ -1,14 +1,18 @@
 // Opening file slip modal
 function openModal() {
-  document.getElementById('createSlipModal').classList.add('open');
-  history.pushState({ modal: 'create' }, '', CREATE_SLIP_URL);
+  const modal = document.getElementById('createSlipModal');
+  if (!modal) return;
+  modal.classList.add('open');
+  history.pushState({ modal: 'create' }, '', modal.dataset.createUrl);
 }
 
 function closeModal() {
-  document.getElementById('createSlipModal').classList.remove('open');
-  document.querySelector('#createSlipModal form').reset();
+  const modal = document.getElementById('createSlipModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  modal.querySelector('form')?.reset();
   clearSlipFormErrors();
-  history.pushState({ modal: null }, '', DASHBOARD_URL);
+  history.pushState({ modal: null }, '', modal.dataset.dashboardUrl);
 }
 
 function clearSlipFormErrors() {
@@ -184,7 +188,10 @@ function markNotificationRead(el) {
   const id = el.dataset.id;
   if (!el.classList.contains('unread')) return;
 
-  fetch(NOTIFICATIONS_READ_URL, {
+  const readUrl = notifDropdown?.dataset.readUrl;
+  if (!readUrl) return;
+
+  fetch(readUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `id=${id}`

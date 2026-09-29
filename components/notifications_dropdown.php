@@ -5,7 +5,8 @@ $unreadCount   = getUnreadCount($conn, $_SESSION['user_id']);
 $notifications = getNotifications($conn, $_SESSION['user_id']);
 ?>
 
-<div class="notification-dropdown" id="notificationDropdown">
+<div class="notification-dropdown" id="notificationDropdown"
+     data-read-url="<?= url('/notifications/read') ?>">
   <div class="notification-header">
     <span>Notifications</span>
     <?php if ($unreadCount > 0): ?>

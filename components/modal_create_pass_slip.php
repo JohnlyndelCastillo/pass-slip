@@ -2,8 +2,7 @@
 <div class="modal-overlay <?= $autoOpenCreate ? 'open' : '' ?>"
      id="createSlipModal"
      data-create-url="<?= url('/dashboard/student/create') ?>"
-     data-dashboard-url="<?= url('/dashboard/student') ?>"
-     data-notifications-read-url="<?= url('/notifications/read') ?>">
+     data-dashboard-url="<?= url('/dashboard/student') ?>">
   <div class="modal">
 
     <!-- Modal Header -->
