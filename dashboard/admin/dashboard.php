@@ -26,15 +26,15 @@ $editUserId = ($path === '/dashboard/admin/edit' && isset($_GET['id']))
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
-  <script>try { if (localStorage.getItem('pass-slip-sidebar-collapsed') === 'true') document.documentElement.classList.add('sidebar-collapsed-initial'); } catch (error) {}</script>
+  <script>try { if (window.matchMedia('(min-width: 769px)').matches && localStorage.getItem('pass-slip-sidebar-collapsed') === 'true') document.documentElement.classList.add('sidebar-collapsed-initial'); } catch (error) {}</script>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/public/css/common.css?v=1.3">
+  <link rel="stylesheet" href="/public/css/common.css?v=1.8">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/public/css/modal/profile_dropdown_style.css?v=1.0">
 </head>
 
-<body>
+<body data-user-id="<?= (int) $_SESSION['user_id'] ?>">
 
   <!-- Top Bar -->
   <header class="top-bar">
@@ -106,10 +106,10 @@ $editUserId = ($path === '/dashboard/admin/edit' && isset($_GET['id']))
             <?php if ($result->num_rows > 0): ?>
               <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
-                  <td><?= htmlspecialchars($row['fullname']) ?></td>
-                  <td><?= htmlspecialchars($row['username']) ?></td>
-                  <td><span class="role-<?= $row['role'] ?>"><?= ucwords(str_replace('_', ' ', $row['role'])) ?></span></td>
-                  <td><?= date('M d, Y', strtotime($row['created_at'])) ?></td>
+                  <td data-label="Full Name"><?= htmlspecialchars($row['fullname']) ?></td>
+                  <td data-label="Username"><?= htmlspecialchars($row['username']) ?></td>
+                  <td data-label="Role"><span class="role-<?= $row['role'] ?>"><?= ucwords(str_replace('_', ' ', $row['role'])) ?></span></td>
+                  <td data-label="Created At"><?= date('M d, Y', strtotime($row['created_at'])) ?></td>
                   <td class="row-menu">
                     <button class="row-menu-btn" onclick="toggleMenu(this)">⋮</button>
                     <div class="dropdown">
@@ -146,8 +146,8 @@ $editUserId = ($path === '/dashboard/admin/edit' && isset($_GET['id']))
 
   <script src="/public/js/show_action_menu.js"></script>
   <script src="/public/js/modal_file_slip.js"></script>
-  <script src="/public/js/resize_table_columns.js?v=1.0"></script>
-  <script src="/public/js/sidebar_toggle.js?v=1.0"></script>
+  <script src="/public/js/resize_table_columns.js?v=<?= filemtime(dirname(__DIR__, 2) . '/public/js/resize_table_columns.js') ?>"></script>
+  <script src="/public/js/sidebar_toggle.js?v=1.1"></script>
   <script src="/public/js/admin/add_user_modal.js"></script>
 
 </body>

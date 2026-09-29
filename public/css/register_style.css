@@ -133,3 +133,41 @@ h6 {
   border-radius: 6px; 
   margin-bottom: 10px; 
 }
+
+#register-container {
+  width: min(500px, calc(100% - 32px));
+  margin: 20px 0;
+}
+
+@media (max-width: 600px) {
+  body {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 12px 0;
+  }
+
+  .register-form {
+    width: 100%;
+    padding: 28px 22px;
+  }
+
+  form,
+  .password-container {
+    width: 100%;
+  }
+
+  input,
+  button {
+    width: 100%;
+    max-width: 100%;
+    font-size: 16px;
+  }
+
+  .register-header h2 {
+    font-size: 34px;
+  }
+
+  .back-btn {
+    font-size: 28px;
+  }
+}

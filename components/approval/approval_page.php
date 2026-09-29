@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Approval Page</title>
-  <script>try { if (localStorage.getItem('pass-slip-sidebar-collapsed') === 'true') document.documentElement.classList.add('sidebar-collapsed-initial'); } catch (error) {}</script>
+  <script>try { if (window.matchMedia('(min-width: 769px)').matches && localStorage.getItem('pass-slip-sidebar-collapsed') === 'true') document.documentElement.classList.add('sidebar-collapsed-initial'); } catch (error) {}</script>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/public/css/common.css?v=1.3">
+  <link rel="stylesheet" href="/public/css/common.css?v=1.8">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/public/css/modal/profile_dropdown_style.css?v=1.0">
@@ -23,7 +23,7 @@ $approvalDashboardPaths = [
 $approvalDashboardPath = $approvalDashboardPaths[$role] ?? '/login';
 ?>
 
-<body>
+<body data-user-id="<?= (int) $_SESSION['user_id'] ?>">
 
   <!-- Top Bar -->
   <header class="top-bar">
@@ -89,7 +89,7 @@ $approvalDashboardPath = $approvalDashboardPaths[$role] ?? '/login';
             <?php if ($result->num_rows > 0): ?>
               <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
-                  <td class="row-title">
+                  <td class="row-title" data-label="Title">
                     <a href="#" onclick="openDetailsModal(this)"
                       data-category="<?= ucfirst(htmlspecialchars($row['category'])) ?>"
                       data-student="<?= htmlspecialchars($row['requesting_student']) ?>"
@@ -105,10 +105,10 @@ $approvalDashboardPath = $approvalDashboardPaths[$role] ?? '/login';
                       <?= htmlspecialchars($row['purpose']) ?>
                     </a>
                   </td>
-                  <td><?= date('M d, Y', strtotime($row['request_date'])) ?></td>
-                  <td><?= htmlspecialchars($row['student_name']) ?></td>
-                  <td><?= htmlspecialchars($row['section'] ?? '—') ?></td>
-                  <td>
+                  <td data-label="Request Date"><?= date('M d, Y', strtotime($row['request_date'])) ?></td>
+                  <td data-label="Requester"><?= htmlspecialchars($row['student_name']) ?></td>
+                  <td data-label="Section"><?= htmlspecialchars($row['section'] ?? '—') ?></td>
+                  <td data-label="Actions">
                     <div class="row-actions">
                       <form action="<?= url('/slips/approve') ?>" method="POST">
                         <input type="hidden" name="id" value="<?= $row['id'] ?>">
@@ -149,8 +149,8 @@ $approvalDashboardPath = $approvalDashboardPaths[$role] ?? '/login';
 
   <script src="/public/js/show_action_menu.js"></script>
   <script src="/public/js/modal_file_slip.js"></script>
-  <script src="/public/js/resize_table_columns.js?v=1.0"></script>
-  <script src="/public/js/sidebar_toggle.js?v=1.0"></script>
+  <script src="/public/js/resize_table_columns.js?v=<?= filemtime(dirname(__DIR__, 2) . '/public/js/resize_table_columns.js') ?>"></script>
+  <script src="/public/js/sidebar_toggle.js?v=1.1"></script>
 
 </body>
 </html>
