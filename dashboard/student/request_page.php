@@ -48,8 +48,9 @@ $autoOpenCreate = ($path === '/dashboard/student/create');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Request Pass Slip</title>
+  <script>try { if (localStorage.getItem('pass-slip-sidebar-collapsed') === 'true') document.documentElement.classList.add('sidebar-collapsed-initial'); } catch (error) {}</script>
   <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/public/css/common.css?v=1.0">
+  <link rel="stylesheet" href="/public/css/common.css?v=1.3">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/public/css/modal/profile_dropdown_style.css?v=1.0">  
@@ -58,9 +59,9 @@ $autoOpenCreate = ($path === '/dashboard/student/create');
 <body>
   <!-- Top Bar -->
   <header class="top-bar">
-    <div class="top-bar-menu">
+    <button class="top-bar-menu" type="button" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="dashboardSidebar">
       <i class="fa-solid fa-bars"></i>
-    </div>
+    </button>
     <div class="top-bar-spacer"></div>
     <div class="top-bar-actions">
       <div class="top-bar-bell" title="Notifications">
@@ -79,8 +80,8 @@ $autoOpenCreate = ($path === '/dashboard/student/create');
 
   <!-- Side Bar -->
   <div class="side-layout">
-    <aside class="side-bar">
-      <a class="nav-item active" href="#">
+    <aside class="side-bar" id="dashboardSidebar" aria-label="Main navigation">
+      <a class="nav-item active" href="<?= url('/dashboard/student') ?>" title="Dashboard" aria-label="Dashboard" aria-current="page">
         <i class="fa-solid fa-hashtag"></i>
         Dashboard
       </a>
@@ -136,7 +137,7 @@ $autoOpenCreate = ($path === '/dashboard/student/create');
                     </a>
                   </td>
                   <td><?= date('Y-m-d', strtotime($row['created_at'])) ?></td>
-                  <td><span class="badge badge-<?= $row['approval_status'] ?>"><?= ucwords(str_replace('_', ' ', $row['approval_status'])) ?></span></td>
+                  <td class="status-cell"><span class="badge badge-<?= $row['approval_status'] ?>" title="<?= htmlspecialchars(ucwords(str_replace('_', ' ', $row['approval_status']))) ?>"><?= ucwords(str_replace('_', ' ', $row['approval_status'])) ?></span></td>
                   <td><?= $row['status_date'] ?? '—' ?></td>
                   <td><?= htmlspecialchars($row['reviewed_by_name'] ?? '—') ?></td>
                   <td class="row-menu">
@@ -163,6 +164,8 @@ $autoOpenCreate = ($path === '/dashboard/student/create');
 
   <script src="/public/js/show_action_menu.js"></script>
   <script src="/public/js/modal_file_slip.js"></script>
+  <script src="/public/js/resize_table_columns.js?v=1.0"></script>
+  <script src="/public/js/sidebar_toggle.js?v=1.0"></script>
 
 </body>
 
