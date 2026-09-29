@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../middleware/file_guard.php';
 require_once __DIR__ . '/../includes/config.php';
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -13,7 +14,8 @@ if ($action === 'register') {
   $fullname = trim($_POST['fullname'] ?? '');
   $username = trim($_POST['username'] ?? '');
   $password = $_POST['password'] ?? '';
-  $role     = $_POST['role'] ?? 'student';
+  // Public registration must never let the caller choose a privileged role.
+  $role     = 'student';
 
   // Basic validation
   if (empty($fullname) || empty($username) || empty($password)) {

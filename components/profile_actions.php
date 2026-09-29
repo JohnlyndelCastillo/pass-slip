@@ -33,7 +33,7 @@ if (!empty($_SESSION['user_id']) && isset($conn)) {
     </div>
   <?php endif; ?>
 
-  <form action="/auth/logout_auth.php" method="POST">
+  <form action="<?= url('/auth/logout') ?>" method="POST">
     <button type="submit" class="profile-dropdown-logout">
       <i class="fa-solid fa-right-from-bracket"></i> Logout
     </button>

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../middleware/file_guard.php';
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/notifications.php';
@@ -11,8 +12,8 @@ $dashboardRoute = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $id          = $_POST['id'];
-  $role        = $_SESSION['role'];
+  $id          = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+  $role        = $_SESSION['role'] ?? '';
   $reviewed_by = $_SESSION['user_id'];
   $status_date = date('Y-m-d');
 
@@ -32,13 +33,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     'csd_council'     => 'techhead_approved',
   ];
 
-  // Verify the slip is at the correct stage for this role
-  $checkStmt = $conn->prepare("SELECT approval_status FROM pass_slips WHERE id = ?");
-  $checkStmt->bind_param("i", $id);
+  $assignmentColumn = [
+    'instructor' => 'instructor',
+    'adviser' => 'class_adviser',
+    'technology_head' => 'technology_head',
+    'csd_council' => null,
+  ];
+
+  if (!$id || !isset($requiredStatus[$role])) {
+    http_response_code(400);
+    exit('Invalid approval request.');
+  }
+
+  // Verify both the workflow stage and the approver selected on the slip.
+  $column = $assignmentColumn[$role];
+  $checkSql = 'SELECT id FROM pass_slips WHERE id = ? AND approval_status = ?';
+  if ($column !== null) $checkSql .= " AND `$column` = ?";
+  $checkStmt = $conn->prepare($checkSql);
+  $expected = $requiredStatus[$role];
+  if ($column !== null) $checkStmt->bind_param('isi', $id, $expected, $reviewed_by);
+  else $checkStmt->bind_param('is', $id, $expected);
   $checkStmt->execute();
   $checkResult = $checkStmt->get_result()->fetch_assoc();
 
-  if (!$checkResult || $checkResult['approval_status'] !== $requiredStatus[$role]) {
+  if (!$checkResult) {
     $_SESSION['approvalError'] = "You are not authorized to approve this slip at this stage.";
     header("Location: " . url($dashboardRoute[$role]));
     exit;
@@ -46,14 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $status = $nextStatus[$role];
 
-  $stmt = $conn->prepare("
-    UPDATE pass_slips 
-    SET approval_status = ?, reviewed_by = ?, status_date = ?
-    WHERE id = ?
-  ");
-  $stmt->bind_param("sisi", $status, $reviewed_by, $status_date, $id);
+  $updateSql = 'UPDATE pass_slips SET approval_status = ?, reviewed_by = ?, status_date = ? WHERE id = ? AND approval_status = ?';
+  if ($column !== null) $updateSql .= " AND `$column` = ?";
+  $stmt = $conn->prepare($updateSql);
+  if ($column !== null) $stmt->bind_param('sisisi', $status, $reviewed_by, $status_date, $id, $expected, $reviewed_by);
+  else $stmt->bind_param('sisis', $status, $reviewed_by, $status_date, $id, $expected);
 
-  if ($stmt->execute()) {
+  if ($stmt->execute() && $stmt->affected_rows === 1) {
 
     // After successful update, notify next role
     $nextNotify = [
@@ -63,7 +80,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       'csd_council'     => ['role' => null,               'message' => null],
     ];
 
-    if ($nextNotify[$role]['role']) {
+    if (in_array($role, ['instructor', 'adviser'], true)) {
+      $nextApproverColumn = $role === 'instructor' ? 'class_adviser' : 'technology_head';
+      $slipStmt = $conn->prepare("SELECT `$nextApproverColumn` AS next_approver FROM pass_slips WHERE id = ?");
+      $slipStmt->bind_param('i', $id);
+      $slipStmt->execute();
+      $slip = $slipStmt->get_result()->fetch_assoc();
+      if ($slip && ctype_digit((string) $slip['next_approver'])) {
+        createNotification($conn, (int) $slip['next_approver'], $id, $nextNotify[$role]['message']);
+      }
+      $slipStmt->close();
+    } elseif ($nextNotify[$role]['role']) {
+      // CSD council has no per-user assignment field, so notify that role.
       notifyByRole($conn, $nextNotify[$role]['role'], $id, $nextNotify[$role]['message']);
     } else {
       // Fully approved — notify the student

@@ -22,9 +22,9 @@ $stmt = $conn->prepare("
   JOIN users u ON ps.user_id = u.id
   LEFT JOIN users a ON ps.class_adviser = a.id
   LEFT JOIN users t ON ps.technology_head = t.id
-  WHERE ps.approval_status = ?
+  WHERE ps.approval_status = ? AND ps.instructor = ?
 ");
-$stmt->bind_param("s", $requiredStatus);
+$stmt->bind_param("si", $requiredStatus, $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 

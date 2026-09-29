@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../middleware/file_guard.php';
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/notifications.php';
@@ -30,6 +31,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($instructor === '')         $errors[] = 'Instructor is required.';
   if ($class_adviser === '')      $errors[] = 'Class adviser is required.';
   if ($technology_head === '')    $errors[] = 'Technology head is required.';
+
+  // Validate that each selected approver exists and has the expected role.
+  foreach ([
+    'instructor' => [$instructor, 'instructor'],
+    'class adviser' => [$class_adviser, 'adviser'],
+    'technology head' => [$technology_head, 'technology_head'],
+  ] as $label => [$approverId, $expectedRole]) {
+    if (!ctype_digit((string) $approverId) || (int) $approverId < 1) {
+      $errors[] = ucfirst($label) . ' is invalid.';
+      continue;
+    }
+    $approverStmt = $conn->prepare('SELECT id FROM users WHERE id = ? AND role = ?');
+    $approverStmt->bind_param('is', $approverId, $expectedRole);
+    $approverStmt->execute();
+    $validApprover = $approverStmt->get_result()->num_rows === 1;
+    $approverStmt->close();
+    if (!$validApprover) $errors[] = ucfirst($label) . ' is invalid.';
+  }
 
   if (!empty($errors)) {
     $_SESSION['slipError'] = implode(' ', $errors);
@@ -63,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the new slip id after successful insert
     $slip_id = $conn->insert_id;
 
-    // Notify all instructors
-    notifyByRole($conn, 'instructor', $slip_id, "A new pass slip has been submitted and requires your approval.");
+    // Notify only the instructor selected for this slip.
+    createNotification($conn, (int) $instructor, $slip_id, "A new pass slip has been submitted and requires your approval.");
 
     $stmt->close();
     $conn->close();
